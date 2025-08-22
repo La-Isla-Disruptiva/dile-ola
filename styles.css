@@ -98,5 +98,4 @@ body {
   background-color: none;
   /* initial position*/
   box-shadow: calc(2 * var(--pixel)) calc(3 * var(--pixel)) var(--blue);
-
 }
