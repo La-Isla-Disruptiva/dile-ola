@@ -1,0 +1,56 @@
+:root {
+  --pixel: 100px;
+  --black: #333;
+  --green-0: #74d480;
+  --green-1: #27f54d;
+  --green-2: #06c429;
+  --green-3: #0d691d;
+}
+
+#map {
+  width: var(--pixel);
+  height: var(--pixel);
+     /* first column */
+  background-color: var(--green-1);
+  box-shadow: var(--pixel) 0 var(--green-2),
+              calc(2 * var(--pixel)) 0 var(--green-2),
+              calc(3 * var(--pixel)) 0 var(--green-0),
+              calc(4 * var(--pixel)) 0 var(--green-1),
+              calc(5 * var(--pixel)) 0 var(--green-3),
+     /* second column */
+              0 var(--pixel) var(--green-3),
+              var(--pixel) var(--pixel) var(--green-2),
+              calc(2*var(--pixel)) var(--pixel) var(--green-3),
+              calc(3*var(--pixel)) var(--pixel) var(--green-0),
+              calc(4*var(--pixel)) var(--pixel) var(--green-1),
+              calc(5*var(--pixel)) var(--pixel) var(--green-2),
+     /* third column */
+              calc(0*var(--pixel)) calc(2*var(--pixel)) var(--green-2),
+              calc(1*var(--pixel)) calc(2*var(--pixel)) var(--green-1),
+              calc(2*var(--pixel)) calc(2*var(--pixel)) var(--green-0),
+              calc(3*var(--pixel)) calc(2*var(--pixel)) var(--green-1),
+              calc(4*var(--pixel)) calc(2*var(--pixel)) var(--green-2),
+              calc(5*var(--pixel)) calc(2*var(--pixel)) var(--green-1),
+
+     /* fourth column */
+              calc(0*var(--pixel)) calc(3*var(--pixel)) var(--green-3),
+              calc(1*var(--pixel)) calc(3*var(--pixel)) var(--green-1),
+              calc(2*var(--pixel)) calc(3*var(--pixel)) var(--green-3),
+              calc(3*var(--pixel)) calc(3*var(--pixel)) var(--green-2),
+              calc(4*var(--pixel)) calc(3*var(--pixel)) var(--green-0),
+              calc(5*var(--pixel)) calc(3*var(--pixel)) var(--green-2),
+     /* fifth column */
+              calc(0*var(--pixel)) calc(4*var(--pixel)) var(--green-0),
+              calc(1*var(--pixel)) calc(4*var(--pixel)) var(--green-2),
+              calc(2*var(--pixel)) calc(4*var(--pixel)) var(--green-1),
+              calc(3*var(--pixel)) calc(4*var(--pixel)) var(--green-3),
+              calc(4*var(--pixel)) calc(4*var(--pixel)) var(--green-1),
+              calc(5*var(--pixel)) calc(4*var(--pixel)) var(--green-2),
+     /* sixth column */
+              calc(0*var(--pixel)) calc(5*var(--pixel)) var(--green-1),
+              calc(1*var(--pixel)) calc(5*var(--pixel)) var(--green-2),
+              calc(2*var(--pixel)) calc(5*var(--pixel)) var(--green-0),
+              calc(3*var(--pixel)) calc(5*var(--pixel)) var(--green-1),
+              calc(4*var(--pixel)) calc(5*var(--pixel)) var(--green-1),
+              calc(5*var(--pixel)) calc(5*var(--pixel)) var(--green-0);
+}
