@@ -99,3 +99,29 @@ body {
   /* initial position*/
   box-shadow: calc(2 * var(--pixel)) calc(3 * var(--pixel)) var(--blue);
 }
+
+#face { 
+  position: relative;
+  width: var(--pixel);
+  height: var(--pixel);
+  box-sizing: border-box;
+  border-radius: 100% 100%;
+  transform: translate(calc(2 * var(--pixel)), calc(2.25 * var(--pixel)) );
+  border: calc(3 * var(--line)) solid var(--blue);
+  overflow: hidden;
+}
+
+#video-face {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: calc(1.5 *var(--pixel));
+  height: calc(1.5 *var(--pixel));
+  /*
+  box-sizing: border-box;
+  border-radius: 100% 100%;
+  transform: translate(calc(2 * var(--pixel)), calc(2.25 * var(--pixel)) );
+  */
+
+}
