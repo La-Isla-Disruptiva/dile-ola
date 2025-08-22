@@ -1,13 +1,46 @@
 :root {
   --pixel: 100px;
+  --grid: 6;
+  --line: 2px;
+  /* colors */
   --black: #333;
   --green-0: #74d480;
   --green-1: #27f54d;
   --green-2: #06c429;
   --green-3: #0d691d;
+  --blue: #1d2970;
 }
 
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+#canvas{
+  width: calc(var(--grid) *var(--pixel));
+  height: calc(var(--grid) *var(--pixel));
+
+  position: relative;
+  border: var(--line) solid var(--black);
+}
 #map {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
   width: var(--pixel);
   height: var(--pixel);
      /* first column */
@@ -53,4 +86,17 @@
               calc(3*var(--pixel)) calc(5*var(--pixel)) var(--green-1),
               calc(4*var(--pixel)) calc(5*var(--pixel)) var(--green-1),
               calc(5*var(--pixel)) calc(5*var(--pixel)) var(--green-0);
+}
+
+#character-1 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 4;
+  width: var(--pixel);
+  height: var(--pixel);
+  background-color: none;
+  /* initial position*/
+  box-shadow: calc(2 * var(--pixel)) calc(3 * var(--pixel)) var(--blue);
+
 }
