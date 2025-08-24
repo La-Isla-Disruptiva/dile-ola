@@ -57,6 +57,41 @@ function move_right(){
   pad_right.addEventListener('click', function(e){ move_right(); })
 
 
+// TEXT CHAT
+speakArea =  document.getElementById("character-1-text");
+
+function clearTextArea(area){
+  area.value = "";
+};
+function dileOla(text){
+    div = document.createElement( 'div' );
+    div.innerHTML= text;
+    div.classList.add("ola")
+    speakArea.appendChild(div);
+    setTimeout( () => {
+       div.remove()
+    }, 15000)
+  }
+
+
+// press enter key
+var textArea = document.getElementById("chatedit-textarea");
+  textArea.onkeyup = function(e) {
+    e = e || window.event;
+    if (e.keyCode == 13) {
+      dileOla(this.value)
+      clearTextArea(this);
+    }
+};
+// press dile button
+var dileButton =  document.getElementById("dile");
+dileButton.onclick = function(){
+  dileOla(textArea.value)
+  clearTextArea(textArea)
+}
+
+  // VIDEO CHAT
+
 // Put variables in global scope to make them available to the browser console.
 const constraints = window.constraints = {
   audio: false,
