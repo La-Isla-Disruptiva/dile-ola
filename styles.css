@@ -165,7 +165,7 @@ body {
   height: 120px;
   width: 120px;
 }
-.pad-up{
+#pad-up{
   position: absolute;
   left: 40px;
   top: 0;
@@ -175,7 +175,7 @@ body {
   border-radius: 100%;
   border: 2px solid var(--black);
 }
-.pad-down {
+#pad-down {
   position: absolute;
   left: 40px;
   bottom: 0;
@@ -185,7 +185,7 @@ body {
   border-radius: 100%;
   border: 2px solid var(--black);
 }
-.pad-left {
+#pad-left {
   position: absolute;
   left: 0;
   top: 40px;
@@ -195,7 +195,7 @@ body {
   border-radius: 100%;
   border: 2px solid var(--black);
 }
-.pad-right {
+#pad-right {
   position: absolute;
   right: 0;
   top: 40px;

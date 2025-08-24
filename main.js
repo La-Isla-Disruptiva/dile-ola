@@ -8,30 +8,54 @@
   position.x=map.x-me.x;
   position.y=map.y-me.y;
 
+/* motion functions */
+function move_up() {
+  position.y = position.y - 20;
+  character.style.top = position.y + "px";
+  }
+
+function move_down(){
+  position.y = position.y + 20;
+  character.style.top = position.y + "px";
+  }
+function move_left(){
+  position.x = position.x - 20;
+  character.style.left = position.x + "px";
+  }
+function move_right(){
+  position.x = position.x + 20;
+  character.style.left = position.x + "px";
+  }
+
+  /* move using keys */
   document.addEventListener('keydown', function(e) {
-  // GAUCHE:   37, // gauche
-  // HAUT:     38, // haut
-  // DROITE:  39,  // droite
-  // BAS:   40     // bas
   switch(e.keyCode){
       case 37: // gauche
-        position.x = position.x - 20;
-        character.style.left = position.x + "px";
+        move_left();
         break;
       case 39: //droite
-        position.x = position.x + 20;
-        character.style.left = position.x + "px";
+        move_right();
         break;
       case 38: // haut
-        position.y = position.y - 20;
-        character.style.top = position.y + "px";
+        move_up();
         break;
-      case 40: 
-        position.y = position.y + 20;
-        character.style.top = position.y + "px";
+      case 40: //down
+        move_down();
         break;
     }
     });
+
+
+/* move using pad */
+  var pad_up = document.getElementById('pad-up')
+  pad_up.addEventListener('click', function(e){ move_up(); })
+  var pad_down = document.getElementById('pad-down')
+  pad_down.addEventListener('click', function(e){ move_down(); })
+  var pad_left = document.getElementById('pad-left')
+  pad_left.addEventListener('click', function(e){ move_left(); })
+  var pad_right= document.getElementById('pad-right')
+  pad_right.addEventListener('click', function(e){ move_right(); })
+
 
 // Put variables in global scope to make them available to the browser console.
 const constraints = window.constraints = {
