@@ -1,0 +1,16 @@
+{
+  "title": "Dile Ola!",
+  "description": "Ahi esta tu primera leccion en espanol! Disfrutalo ;-)",
+  "words": [
+    {"es": "amarillo", "en": "yellow"},
+    {"es": "maron", "en": "brown"}
+  ],
+  "verbs" : [
+    {"name": "estar", "conjugations" : [
+      { "time": "presente", "conjugation": ["estoy", "estas", "esta", "estamos", "estais", "estan"] }
+    ] }
+  ],
+  "examples": [
+    {"es": "Hola! Soy Brandon."}, {"en": "Hi! I am Brandon"}
+  ]
+}

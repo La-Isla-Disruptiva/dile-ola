@@ -235,6 +235,17 @@ body {
   border: 2px solid var(--black);
 }
 
+#booksButton {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: var(--black);
+  color: white;
+  font-weight: bold;
+}
+
 /* Desktop and up ... todo
 @media (min-width: 1024px) {
 

@@ -1,4 +1,33 @@
-  var character = document.getElementById('character-1')
+
+// BOOKS
+
+function injectBookContent(data){
+  title = document.getElementById('book-title');
+  title.innerHTML=data.title;
+
+  description = document.getElementById('book-description');
+  description.innerHTML=data.description
+
+  words= document.getElementById('book-words');
+
+
+
+  verbs= document.getElementById('book-verbs');
+  examples= document.getElementById('book-examples');
+
+}
+
+fetch('./data.json')
+    .then(response => response.json())
+    .then(data => injectBookContent(data))
+    .catch(error => console.error('Error fetching JSON:', error));
+
+
+
+
+
+// CHARACTER 1
+var character = document.getElementById('character-1');
 
 /* position initiale */
   var map = document.getElementById('map').getBoundingClientRect();
@@ -161,14 +190,9 @@ function errorMsg(msg, error) {
   }
 }
 
-async function init(e) {
-  try {
+async function init() {
     const stream = await navigator.mediaDevices.getUserMedia(constraints);
     handleSuccess(stream);
-    e.target.disabled = true;
-  } catch (e) {
-    handleError(e);
-  }
 }
 
 init()

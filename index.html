@@ -27,6 +27,25 @@
       <div id="dile">Dile!</div>
     </div>
   </div>
+    <div id="booksButton" onclick="window.dialog.showModal()">books</div>
+
+<dialog id="dialog">
+      <h1 id="book-title"></h1>
+      <small id="book-description"></small>
+      <div>
+        <h2>Palabras</h2>
+        <div id="book-words"></div>
+      </div>
+      <div>
+        <h2>Verbos</h2>
+        <div id="book-verbs"></div>
+      </div>
+      <div>
+        <h2>Ejemplos</h2>
+        <div id="book-examples"></div>
+      </div>
+  <button onclick="window.dialog.close();">close</button>
+</dialog>
   <script src="main.js"></script>
 </body>
 </html>
