@@ -149,11 +149,20 @@ body {
   flex-direction: column;
   justify-content: space-around;
 }
+#chatedit-textarea:focus {
+  position: fixed;
+  top: 50px; left: 50%;
+  transform: translate(-50%,0);
+}
 
 .dile {
-  align-self: end;
+  position: absolute;
+  top: 75px;
+  left: 75px;
+  transform: translate(-50%,-50%);
   padding: 10px;
   border-radius: 10px;
+  border: 2px solid var(--black);
   background-color: var(--red);
   color: white;
   font-weight: bold;
@@ -162,25 +171,25 @@ body {
   position: absolute;
   bottom: 20px;
   right: 20px;
-  height: 120px;
-  width: 120px;
+  height: 150px;
+  width: 150px;
 }
 #pad-up{
   position: absolute;
-  left: 40px;
+  left: 50px;
   top: 0;
-  height: 40px;
-  width: 40px;
+  height: 50px;
+  width: 50px;
   background: var(--red);
   border-radius: 100%;
   border: 2px solid var(--black);
 }
 #pad-down {
   position: absolute;
-  left: 40px;
+  left: 50px;
   bottom: 0;
-  height: 40px;
-  width: 40px;
+  height: 50px;
+  width: 50px;
   background: var(--red);
   border-radius: 100%;
   border: 2px solid var(--black);
@@ -188,9 +197,9 @@ body {
 #pad-left {
   position: absolute;
   left: 0;
-  top: 40px;
-  height: 40px;
-  width: 40px;
+  top: 50px;
+  height: 50px;
+  width: 50px;
   background: var(--red);
   border-radius: 100%;
   border: 2px solid var(--black);
@@ -198,10 +207,16 @@ body {
 #pad-right {
   position: absolute;
   right: 0;
-  top: 40px;
-  height: 40px;
-  width: 40px;
+  top: 50px;
+  height: 50px;
+  width: 50px;
   background: var(--red);
   border-radius: 100%;
   border: 2px solid var(--black);
 }
+
+/* Desktop and up ... todo
+@media (min-width: 1024px) {
+
+}
+*/
