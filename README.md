@@ -1,3 +1,3 @@
-# walk & talk
+# Dile Ola!
 
-A game-like tech demo of webrtc videochat.
+A game-like videochat
