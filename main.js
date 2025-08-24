@@ -9,21 +9,13 @@
   position.y=map.y-me.y;
 
 /* motion functions */
-function move_up() {
-  position.y = position.y - 20;
+function move_y(y) {
+  position.y = position.y + (y * 20);
   character.style.top = position.y + "px";
   }
 
-function move_down(){
-  position.y = position.y + 20;
-  character.style.top = position.y + "px";
-  }
-function move_left(){
-  position.x = position.x - 20;
-  character.style.left = position.x + "px";
-  }
-function move_right(){
-  position.x = position.x + 20;
+function move_x(x){
+  position.x = position.x + (x * 20);
   character.style.left = position.x + "px";
   }
 
@@ -31,30 +23,63 @@ function move_right(){
   document.addEventListener('keydown', function(e) {
   switch(e.keyCode){
       case 37: // gauche
-        move_left();
+        move_x(-1);
         break;
       case 39: //droite
-        move_right();
+        move_x(1);
         break;
       case 38: // haut
-        move_up();
+        move_y(-1);
         break;
       case 40: //down
-        move_down();
+        move_y(1);
         break;
     }
     });
 
+  // todo: ... tester si le curseur est toujours dans le div. si non , on arrête.
+  do_move_x=0
+  do_move_y=0
+function repeatMoveX(x){
+    move_x(x)
+    setTimeout(()=> {
+     if(do_move_x === 1 ){
+        repeatMoveX(x);
+      }
+    },100)
+  }
+function repeatMoveY(y){
+    move_y(y)
+    setTimeout(()=> {
+     if(do_move_y=== 1 ){
+        repeatMoveY(y);
+      }
+    },100)
+  }
+
 
 /* move using pad */
   var pad_up = document.getElementById('pad-up')
-  pad_up.addEventListener('click', function(e){ move_up(); })
+  pad_up.addEventListener('mousedown', function(e){ 
+    do_move_y=1;
+    repeatMoveY(-1);
+  })
+  pad_up.addEventListener('pointerup', function(e){ do_move_y= 0 })
+
   var pad_down = document.getElementById('pad-down')
-  pad_down.addEventListener('click', function(e){ move_down(); })
+  pad_down.addEventListener('pointerdown', function(e){ 
+    do_move_y=1;
+    repeatMoveY(1); 
+  })
+  pad_down.addEventListener('pointerup', function(e){ do_move_y= 0 })
+
   var pad_left = document.getElementById('pad-left')
-  pad_left.addEventListener('click', function(e){ move_left(); })
+  pad_left.addEventListener('pointerdown', function(e){ do_move_x=1; repeatMoveX(-1); })
+  pad_left.addEventListener('pointerup', function(e){ do_move_x=0; })
+
   var pad_right= document.getElementById('pad-right')
-  pad_right.addEventListener('click', function(e){ move_right(); })
+  pad_right.addEventListener('pointerdown', function(e){ do_move_x=1; repeatMoveX(1); })
+  pad_right.addEventListener('pointerup', function(e){ do_move_x=0; })
 
 
 // TEXT CHAT
