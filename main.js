@@ -59,18 +59,27 @@ function move_right(){
 
 // TEXT CHAT
 speakArea =  document.getElementById("character-1-text");
+n_ola=0;
+olas={};
 
 function clearTextArea(area){
   area.value = "";
 };
+function deleteOla(n){
+  setTimeout(() => {
+    olas[n].remove();
+    delete olas[n];
+  },15000)
+}
+
 function dileOla(text){
     div = document.createElement( 'div' );
     div.innerHTML= text;
     div.classList.add("ola")
     speakArea.appendChild(div);
-    setTimeout( () => {
-       div.remove()
-    }, 15000)
+    olas[n_ola]=div;
+    deleteOla(n_ola);
+    n_ola=n_ola+1;
   }
 
 
