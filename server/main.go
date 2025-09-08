@@ -69,5 +69,5 @@ func main() {
 	}
 	http.Handle("/",wsHandler)
 	log.Print("Starting server ...")
-	log.Fatal(http.ListenAndServe("localhost:8888", nil))
+	log.Fatal(http.ListenAndServe(":8888", nil))
 }
