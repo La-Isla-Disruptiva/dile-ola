@@ -65,7 +65,12 @@ func (wsh webSocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request){
 
 func main() {
 	wsHandler := webSocketHandler{
-		upgrader: websocket.Upgrader{},
+		upgrader: websocket.Upgrader{
+	    CheckOrigin: func(r *http.Request) bool {
+				// devlopment mode only
+        return true
+      },
+		},
 	}
 	http.Handle("/",wsHandler)
 	log.Print("Starting server ...")
