@@ -31,20 +31,13 @@ class Sprite {
     const x = this.gameObject.x * this.gridFactor - this.gridXOffset;
     const y = this.gameObject.y * this.gridFactor - this.gridYOffset;
     
-    console.log(x)
-    console.log(y)
-    console.log(this.spriteHeight)
-    console.log(this.spriteWidth)
-
-    ctx.drawImage(
+    this.isLoaded && ctx.drawImage(
       this.image,
       0,0,
       this.spriteWidth, this.spriteHeight,
       x,y,
       this.spriteWidth, this.spriteHeight
     )
-
   }
-
 }
 
