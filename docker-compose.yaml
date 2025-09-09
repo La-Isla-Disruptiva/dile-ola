@@ -6,8 +6,8 @@ services:
     ports:
       - 8888:8888
   web:
-    build:
-      dockerfile: web.dockerfile
-      context: .
+    image: nginx:latest
+    volumes:
+      - ./web:/usr/share/nginx/html
     ports:
       - 8080:80
