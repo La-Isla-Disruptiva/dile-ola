@@ -17,6 +17,10 @@
   border: 2px solid red;
 }
 
+* {
+  * box-sizing: border-box;
+  * }
+
 html {
   margin: 0;
   padding: 0;
@@ -25,229 +29,21 @@ html {
 }
 
 body {
+  background: #333;
   margin: 0;
   padding: 0;
-  height: 100%;
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
 }
 
-#canvas{
-  width: calc(var(--grid) *var(--pixel));
-  height: calc(var(--grid) *var(--pixel));
-
+.game-container {
   position: relative;
-  border: var(--line) solid var(--black);
-}
-#map {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 2;
-  width: var(--pixel);
-  height: var(--pixel);
-     /* first column */
-  background-color: var(--green-1);
-  box-shadow: var(--pixel) 0 var(--green-2),
-              calc(2 * var(--pixel)) 0 var(--green-2),
-              calc(3 * var(--pixel)) 0 var(--green-0),
-              calc(4 * var(--pixel)) 0 var(--green-1),
-              calc(5 * var(--pixel)) 0 var(--green-3),
-     /* second column */
-              0 var(--pixel) var(--green-3),
-              var(--pixel) var(--pixel) var(--green-2),
-              calc(2*var(--pixel)) var(--pixel) var(--green-3),
-              calc(3*var(--pixel)) var(--pixel) var(--green-0),
-              calc(4*var(--pixel)) var(--pixel) var(--green-1),
-              calc(5*var(--pixel)) var(--pixel) var(--green-2),
-     /* third column */
-              calc(0*var(--pixel)) calc(2*var(--pixel)) var(--green-2),
-              calc(1*var(--pixel)) calc(2*var(--pixel)) var(--green-1),
-              calc(2*var(--pixel)) calc(2*var(--pixel)) var(--green-0),
-              calc(3*var(--pixel)) calc(2*var(--pixel)) var(--green-1),
-              calc(4*var(--pixel)) calc(2*var(--pixel)) var(--green-2),
-              calc(5*var(--pixel)) calc(2*var(--pixel)) var(--green-1),
+  width: 352px;
+  height: 198px;
+  margin: 0 auto;
+  outline: 2px solid #fff;
 
-     /* fourth column */
-              calc(0*var(--pixel)) calc(3*var(--pixel)) var(--green-3),
-              calc(1*var(--pixel)) calc(3*var(--pixel)) var(--green-1),
-              calc(2*var(--pixel)) calc(3*var(--pixel)) var(--green-3),
-              calc(3*var(--pixel)) calc(3*var(--pixel)) var(--green-2),
-              calc(4*var(--pixel)) calc(3*var(--pixel)) var(--green-0),
-              calc(5*var(--pixel)) calc(3*var(--pixel)) var(--green-2),
-     /* fifth column */
-              calc(0*var(--pixel)) calc(4*var(--pixel)) var(--green-0),
-              calc(1*var(--pixel)) calc(4*var(--pixel)) var(--green-2),
-              calc(2*var(--pixel)) calc(4*var(--pixel)) var(--green-1),
-              calc(3*var(--pixel)) calc(4*var(--pixel)) var(--green-3),
-              calc(4*var(--pixel)) calc(4*var(--pixel)) var(--green-1),
-              calc(5*var(--pixel)) calc(4*var(--pixel)) var(--green-2),
-     /* sixth column */
-              calc(0*var(--pixel)) calc(5*var(--pixel)) var(--green-1),
-              calc(1*var(--pixel)) calc(5*var(--pixel)) var(--green-2),
-              calc(2*var(--pixel)) calc(5*var(--pixel)) var(--green-0),
-              calc(3*var(--pixel)) calc(5*var(--pixel)) var(--green-1),
-              calc(4*var(--pixel)) calc(5*var(--pixel)) var(--green-1),
-              calc(5*var(--pixel)) calc(5*var(--pixel)) var(--green-0);
+  transform: scale(1.5) translateY(50%);
 }
 
-#character-1 {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 4;
-  width: var(--pixel);
-  height: var(--pixel);
-  background-color: none;
-  /* initial position*/
-  box-shadow: calc(2 * var(--pixel)) calc(3 * var(--pixel)) var(--blue);
+.game-container canvas {
+  image-rendering: pixelated;
 }
-
-#face { 
-  position: relative;
-  width: var(--pixel);
-  height: var(--pixel);
-  box-sizing: border-box;
-  border-radius: 100% 100%;
-  transform: translate(calc(2 * var(--pixel)), calc(2.25 * var(--pixel)) );
-  border: calc(3 * var(--line)) solid var(--blue);
-  overflow: hidden;
-}
-
-#character-1-text {
-  position: relative;
-  width: calc(1.5 * var(--pixel));
-  /*height: var(--pixel);
-  border: 2px solid red; */
-  display: flex;
-  flex-direction: column;
-  transform: translate(calc(3 * var(--pixel)), calc(1 * var(--pixel)) );
-
-}
-
-.ola {
-  background: white;
-  border: 2px solid var(--black);
-  padding: 15px;
-  margin-bottom: 5px;
-  border-radius: 10px;
-}
-
-
-#video-face {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: calc(1.5 *var(--pixel));
-  height: calc(1.5 *var(--pixel));
-  /*
-  box-sizing: border-box;
-  border-radius: 100% 100%;
-  transform: translate(calc(2 * var(--pixel)), calc(2.25 * var(--pixel)) );
-  */
-
-}
-
-.toolbar {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 100%;
-  height: 180px;
-  z-index: 100;
-  display: flex;
-  justify-content: center;
-}
-.chat-edit {
-  height: 100%;
-  align-self: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-}
-#chatedit-textarea:focus {
-  position: fixed;
-  top: 50px; left: 50%;
-  transform: translate(-50%,0);
-}
-
-#dile {
-  position: absolute;
-  top: 75px;
-  left: 75px;
-  transform: translate(-50%,-50%);
-  padding: 10px;
-  border-radius: 10px;
-  border: 2px solid var(--black);
-  background-color: var(--red);
-  color: white;
-  font-weight: bold;
-}
-.pad {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  height: 150px;
-  width: 150px;
-}
-#pad-up{
-  position: absolute;
-  left: 50px;
-  top: 0;
-  height: 50px;
-  width: 50px;
-  background: var(--red);
-  border-radius: 100%;
-  border: 2px solid var(--black);
-}
-#pad-down {
-  position: absolute;
-  left: 50px;
-  bottom: 0;
-  height: 50px;
-  width: 50px;
-  background: var(--red);
-  border-radius: 100%;
-  border: 2px solid var(--black);
-}
-#pad-left {
-  position: absolute;
-  left: 0;
-  top: 50px;
-  height: 50px;
-  width: 50px;
-  background: var(--red);
-  border-radius: 100%;
-  border: 2px solid var(--black);
-}
-#pad-right {
-  position: absolute;
-  right: 0;
-  top: 50px;
-  height: 50px;
-  width: 50px;
-  background: var(--red);
-  border-radius: 100%;
-  border: 2px solid var(--black);
-}
-
-#booksButton {
-  position: fixed;
-  top: 15px;
-  right: 15px;
-  padding: 10px;
-  border-radius: 10px;
-  background-color: var(--black);
-  color: white;
-  font-weight: bold;
-}
-
-/* Desktop and up ... todo
-@media (min-width: 1024px) {
-
-}
-*/

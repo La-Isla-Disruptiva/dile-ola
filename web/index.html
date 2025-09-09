@@ -1,52 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>walk & talk</title>
+  <title>Dile Ola!</title>
   <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1">
   <link rel="stylesheet" href="styles.css"
 </head>
 <body>
-  <div id="canvas">
-    <div id="map"></div>
-    <div id="character-1">
-      <div id="face">
-        <video id="video-face" autoplay playsinline></video>
-      </div>
-      <div id="character-1-text"></div>
-    </div>
+  <div class="game-container">
+    <canvas class="game-canvas" width="352" height="198"> </canvas>
   </div>
-  <div class="toolbar">
-    <div class="chat-edit">
-      <textarea id="chatedit-textarea" name="chatedit" rows="6" cols="50"></textarea> 
-    </div>
-    <div class="pad">
-      <div id="pad-left"></div>
-      <div id="pad-up"></div>
-      <div id="pad-right"></div>
-      <div id="pad-down"></div>
-      <div id="dile">Dile!</div>
-    </div>
-  </div>
-    <div id="booksButton" onclick="window.dialog.showModal()">books</div>
-
-<dialog id="dialog">
-      <h1 id="book-title"></h1>
-      <small id="book-description"></small>
-      <div>
-        <h2>Palabras</h2>
-        <div id="book-words"></div>
-      </div>
-      <div>
-        <h2>Verbos</h2>
-        <div id="book-verbs"></div>
-      </div>
-      <div>
-        <h2>Ejemplos</h2>
-        <div id="book-examples"></div>
-      </div>
-  <button onclick="window.dialog.close();">close</button>
-</dialog>
-  <script src="main.js"></script>
+ <script src="js/world.js"></script>
+ <script src="js/init.js"></script>
 </body>
 </html>
 
