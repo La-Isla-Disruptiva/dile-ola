@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"encoding/json"
 	//"time"
 
   "github.com/gorilla/websocket"
@@ -18,10 +19,11 @@ type webSocketHandler struct {
 }
 
 type Message struct {
-	Uuid string `json:uuid`
-	Ckey  string `json:ckey`
-	X     string `json:x`
-	Y     string `json:y`
+	Password string `json:password`
+	Uuid     string `json:uuid`
+	Ckey     string `json:ckey`
+	X        json.Number `json:x`
+	Y        json.Number `json:y`
 }
 
 var clients = make(map[*websocket.Conn]bool)
@@ -75,7 +77,7 @@ func (wsh webSocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request){
 		//	return
 		//}
 		log.Printf("Receive message from %s", string(msg.Uuid))
-		if strings.Trim(string(msg.X),"\n") != "start" {
+		if strings.Trim(string(msg.Password),"\n") != "start" {
 			err = c.WriteMessage(websocket.TextMessage, []byte("You did not say the magic word"))
 			delete(clients,c)
 			if err != nil {

@@ -1,6 +1,6 @@
 class Transporter {
   constructor(config){
-    this.url      = config.url
+    this.hostname= config.hostname
     this.port     = config.port
     this.protocol = config.protocol
    
@@ -8,20 +8,24 @@ class Transporter {
     this.password = config.password || "start"
 
     this.socket   = null
-    //this.isConnected = false
+    this.isConnected = false
     //this.connectionFailed = 0
   }
   init(){
-    this.socket = new WebSocket(this.protocol + "://" + this.url + ":" + this.port)
+    this.socket = new WebSocket(this.protocol + "://" + this.hostname + ":" + this.port)
+    console.log(this.socket)
     // OPEN
     this.socket.onopen = (e) => {
       const msg = {
+        password: this.password,
         uuid: this.uuid,
         ckey: "any",
-        x:    this.password,
-        y:    "trek"
+        x:   "0" ,
+        y:    "0"
       }
       this.socket.send(JSON.stringify(msg));
+      this.isConnected = true
+      console.log("connection", this.socket)
     }
     // ERROR
     this.socket.onerror = (e) => {
@@ -39,6 +43,20 @@ class Transporter {
     this.socket.onmessage = (e) => {
       console.log("data received", e)
     }
+  }
+
+    update(pos){
+      if ( ! this.isConnected ) { return }
+      const msg = {
+        password: this.password,
+        uuid: this.uuid,
+        ckey: pos.ckey,
+        x:    pos.x,
+        y:    pos.y
+      }
+      console.log("msg", msg)
+      console.log("socket", this.socket)
+      this.socket.send(JSON.stringify(msg)); 
   }
 
 }

@@ -12,6 +12,7 @@ class Hero{
   constructor(config){
     // set up parameters
     this.isPlayer = config.isPlayer || false;
+    this.uuid = config.uuid || window.crypto.randomUUID()
 
     // Set up character
     this.characterKey = config.character
@@ -40,10 +41,13 @@ class Hero{
     }
   }
 
+  get state(){
+    return { ckey: this.characterKey, x: this.hero.x, y: this.hero.y}
+  }
   update(state){
     if( this.isPlayer && this.movinProgressRemaining === 0  && state.arrow){
       this.direction = state.arrow
-      this.movinProgressRemaining = 16;
+      this.movinProgressRemaining = 24;
     }
     this.updatePosition()
 
@@ -58,11 +62,11 @@ class Hero{
   }
 
   movex(x){
-    this.shadow.x = this.shadow.x + x * 0.0625
+    this.shadow.x = this.shadow.x + x * 1/24
     this.hero.x = this.shadow.x
   }
   movey(y){
-    this.shadow.y = this.shadow.y + y * 0.0625
+    this.shadow.y = this.shadow.y + y * 1/24
     this.hero.y = this.shadow.y
   }
 

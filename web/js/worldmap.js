@@ -23,13 +23,7 @@ window.worldMaps = {
     lowerSrc: "images/maps/DemoLower.png",
     upperSrc: "images/maps/DemoUpper.png",
     gameObjects: {
-      hero: new Hero({
-              character: "laura",
-              ctx: this.ctx,
-              x: 5, y: 4,
-              isPlayer: true
-            }),
-      npc: new Hero({
+     npc: new Hero({
               character: "alicia",
               ctx: this.ctx,
               x: 6, y: 6

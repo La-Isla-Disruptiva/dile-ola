@@ -8,8 +8,19 @@ class World{
     this.gridYOffset = 18;
 
     this.touchCircle = config.touchCircle;
-    
+    this.ws = config.ws
      
+    this.hero = new Hero({
+              character: "laura",
+              ctx: this.ctx,
+              x: 5, y: 4,
+              isPlayer: true
+            }),
+
+    this.FRAME_INTERVAL_MS = 1000 / MAX_FPS;
+    this.previousTimeMs = 0;
+
+
     this.map = new WorldMap(window.worldMaps.DemoRoom) 
     console.log(this)
     //  new Image();
@@ -18,11 +29,15 @@ class World{
    // }
    // this.map.src = "images/maps/DemoLower.png";
   };
-
   startGameLoop(){
     const step = () => {
-      this.draw()
-      requestAnimationFrame(() => {
+      requestAnimationFrame((currentTimeMs) => {
+           const deltaTimeMs = currentTimeMs - this.previousTimeMs;
+
+           if (deltaTimeMs >= this.FRAME_INTERVAL_MS) {
+             this.draw();
+             this.previousTimeMs = currentTimeMs;
+           }
         step()
       })
     }
@@ -32,6 +47,17 @@ class World{
   init(){
     this.inputControl = new InputControl();
     this.inputControl.init();
+
+
+    this.transport = new Transporter({
+      uuid: this.hero.uuid,
+      hostname: this.ws.hostname,
+      port: this.ws.port,
+      protocol: this.ws.protocol
+    })
+    console.log(this.transport)
+    this.transport.init()
+
     this.startGameLoop();
   }
 
@@ -41,11 +67,26 @@ class World{
     // todo: séparer le update du draw (??)
     this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height)
     this.map.drawLower(this.ctx)
+    
+    //  draw npcs
     Object.values(this.map.gameObjects).forEach(object => {
       //console.log(object)
-      object.update({
+      object.draw(this.ctx);
+    })
+
+
+    // update + draw USER
+      this.hero.update({
         arrow: this.inputControl.direction
       });
+
+      this.hero.draw(this.ctx)
+    
+
+      // transport
+      this.transport.update(this.hero.state)
+
+      // touch screen feedback
       const pos = this.inputControl.touchPosition
       const x = pos[0]
       const y = pos[1]
@@ -58,8 +99,6 @@ class World{
          this.touchCircle.style.visibility = "hidden";
       }
 
-      object.draw(this.ctx);
-    })
   }
 
 }
