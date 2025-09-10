@@ -28,37 +28,23 @@ class World{
   }
 
   init(){
+    this.inputControl = new InputControl();
+    this.inputControl.init();
     this.startGameLoop();
-
   }
 
   draw(){
     this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height)
     this.map.drawLower(this.ctx)
     Object.values(this.map.gameObjects).forEach(object => {
-      //object.movex(.05)
-      object.draw(this.ctx)
+      //console.log(object)
+      object.update({
+        arrow: this.inputControl.direction
+      });
+      object.draw(this.ctx);
     })
   }
 
 }
 
 
-window.worldMaps = {
-  DemoRoom: {
-    lowerSrc: "images/maps/DemoLower.png",
-    upperSrc: "images/maps/DemoUpper.png",
-    gameObjects: {
-      hero: new Hero({
-              character: "laura",
-              ctx: this.ctx,
-              x: 5, y: 4
-            }),
-      npc: new Hero({
-              character: "alicia",
-              ctx: this.ctx,
-              x: 6, y: 6
-            }),
-    }
-  }
-}
