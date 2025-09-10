@@ -11,19 +11,19 @@ class Transporter {
     this.isConnected = false
     //this.connectionFailed = 0
   }
-  init(){
+  init(receivedCB){
     this.socket = new WebSocket(this.protocol + "://" + this.hostname + ":" + this.port)
     console.log(this.socket)
     // OPEN
     this.socket.onopen = (e) => {
-      const msg = {
-        password: this.password,
-        uuid: this.uuid,
-        ckey: "any",
-        x:   "0" ,
-        y:    "0"
-      }
-      this.socket.send(JSON.stringify(msg));
+    //  const msg = {
+    //    password: this.password,
+    //    uuid: this.uuid,
+    //    ckey: "any",
+    //    x:   "0" ,
+    //    y:    "0"
+     // }
+    //  this.socket.send(JSON.stringify(msg));
       this.isConnected = true
       console.log("connection", this.socket)
     }
@@ -41,7 +41,8 @@ class Transporter {
     }
     // RECEIVED
     this.socket.onmessage = (e) => {
-      console.log("data received", e)
+     // console.log("data received", e)
+      receivedCB(e.data)
     }
   }
 
@@ -54,8 +55,6 @@ class Transporter {
         x:    pos.x,
         y:    pos.y
       }
-      console.log("msg", msg)
-      console.log("socket", this.socket)
       this.socket.send(JSON.stringify(msg)); 
   }
 

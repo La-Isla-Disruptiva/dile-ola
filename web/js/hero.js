@@ -12,18 +12,23 @@ class Hero{
   constructor(config){
     // set up parameters
     this.isPlayer = config.isPlayer || false;
-    this.uuid = config.uuid || window.crypto.randomUUID()
+    this.uuid = config.uuid || uuid()
+
+    // set up state
+    this.x = config.x || 4
+    this.y = config.y || 5
+    this.direction = config.direction || "down"
 
     // Set up character
-    this.characterKey = config.character
-    if (! Hero.availableCharacters.includes(this.characterKey)){
-      console.err("Character " + this.characterKey + " do not exist")
+    this.ckey = config.ckey
+    if (! Hero.availableCharacters.includes(this.ckey)){
+      console.error("Character " + this.ckey + " do not exist")
       return
     }
     this.hero = new GameObject({
-      x: config.x || 4,
-      y: config.y || 5,
-      src: "images/characters/people/" + this.characterKey + ".png"
+      x: this.x,
+      y: this.y,
+      src: "images/characters/people/" + this.ckey + ".png"
     })
     this.shadow = new GameObject({
       x: config.x || 4,
@@ -31,7 +36,6 @@ class Hero{
       src: "images/characters/shadow.png"
     })
   // set up motion parameters
-    this.direction = "down"
     this.movinProgressRemaining = 0;
     this.directionUpdate = {
       up: ["movey", -1 ], 
@@ -42,7 +46,12 @@ class Hero{
   }
 
   get state(){
-    return { ckey: this.characterKey, x: this.hero.x, y: this.hero.y}
+    return { 
+      ckey: this.ckey,
+      x: this.x,
+      y: this.y,
+      direction: this.direction
+    }
   }
   update(state){
     if( this.isPlayer && this.movinProgressRemaining === 0  && state.arrow){
@@ -51,6 +60,21 @@ class Hero{
     }
     this.updatePosition()
 
+    // update position
+    if (state.x){
+      this.x = state.x
+      this.hero.x = state.x
+      this.shadow.x = state.x
+    }
+    if (state.y){
+      this.y = state.y
+      this.hero.y = state.y
+      this.shadow.y = state.y
+    }
+    if (state.direction){
+      this.direction = state.direction
+      this.shadow.x = state.x
+    }
   }
 
   updatePosition(){
@@ -62,14 +86,15 @@ class Hero{
   }
 
   movex(x){
-    this.shadow.x = this.shadow.x + x * 1/24
-    this.hero.x = this.shadow.x
+    this.x += x * 1/24
+    this.shadow.x = this.x
+    this.hero.x = this.x
   }
   movey(y){
-    this.shadow.y = this.shadow.y + y * 1/24
-    this.hero.y = this.shadow.y
+    this.y += y * 1/24
+    this.shadow.y = this.y
+    this.hero.y = this.y
   }
-
   draw(ctx){
     this.shadow.sprite.draw(ctx);
     this.hero.sprite.draw(ctx);

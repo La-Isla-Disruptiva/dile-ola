@@ -11,23 +11,20 @@ class World{
     this.ws = config.ws
      
     this.hero = new Hero({
-              character: "laura",
+              ckey: "laura",
               ctx: this.ctx,
               x: 5, y: 4,
               isPlayer: true
             }),
 
+    this.other_users = {}
+
     this.FRAME_INTERVAL_MS = 1000 / MAX_FPS;
     this.previousTimeMs = 0;
 
-
     this.map = new WorldMap(window.worldMaps.DemoRoom) 
+
     console.log(this)
-    //  new Image();
-    //this.map.onload = () => {
-    //  this.ctx.drawImage(this.map,0,0);
-   // }
-   // this.map.src = "images/maps/DemoLower.png";
   };
   startGameLoop(){
     const step = () => {
@@ -55,8 +52,24 @@ class World{
       port: this.ws.port,
       protocol: this.ws.protocol
     })
-    console.log(this.transport)
-    this.transport.init()
+    
+    function genReceivedCB(ref){
+     return (resp) => {
+        const data = JSON.parse(resp)
+        if (data.uuid != ref.hero.uuid){
+          if (data.uuid in ref.other_users ){
+            console.log("updated")
+            ref.other_users[data.uuid].update(data)
+          }else{
+            console.log("new user created", data)
+            ref.other_users[data.uuid] = new Hero(data)
+          }
+        }
+        //console.log(ref.other_users)
+      }
+    }
+
+    this.transport.init(genReceivedCB(this))
 
     this.startGameLoop();
   }
@@ -74,6 +87,12 @@ class World{
       object.draw(this.ctx);
     })
 
+     // draw other USERS
+     
+    Object.values(this.other_users).forEach(object => {
+      console.log(object)
+      object.draw(this.ctx);
+    })
 
     // update + draw USER
       this.hero.update({

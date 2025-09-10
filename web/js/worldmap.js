@@ -24,7 +24,7 @@ window.worldMaps = {
     upperSrc: "images/maps/DemoUpper.png",
     gameObjects: {
      npc: new Hero({
-              character: "alicia",
+              ckey: "alicia",
               ctx: this.ctx,
               x: 6, y: 6
             }),
