@@ -46,6 +46,7 @@ class Hero{
       this.movinProgressRemaining = 16;
     }
     this.updatePosition()
+
   }
 
   updatePosition(){

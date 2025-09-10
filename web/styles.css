@@ -54,3 +54,14 @@ body {
   image-rendering: pixelated;
 }
 
+.touchCircle {
+  border: 2px solid red;
+  width: 100px;
+  height: 100px;
+  border-radius: 100%;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  visibility: hidden;
+  z-index: 100;
+}
