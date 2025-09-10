@@ -14,6 +14,8 @@ class Hero{
     this.isPlayer = config.isPlayer || false;
     this.uuid = config.uuid || uuid()
 
+    this.velocityFactor = config.velocityFactor || 10
+
     // set up state
     this.x = config.x || 4
     this.y = config.y || 5
@@ -56,7 +58,7 @@ class Hero{
   update(state){
     if( this.isPlayer && this.movinProgressRemaining === 0  && state.arrow){
       this.direction = state.arrow
-      this.movinProgressRemaining = 24;
+      this.movinProgressRemaining = this.velocityFactor;
     }
     this.updatePosition()
 
@@ -86,12 +88,12 @@ class Hero{
   }
 
   movex(x){
-    this.x += x * 1/24
+    this.x += x * 1/this.velocityFactor
     this.shadow.x = this.x
     this.hero.x = this.x
   }
   movey(y){
-    this.y += y * 1/24
+    this.y += y * 1/this.velocityFactor
     this.shadow.y = this.y
     this.hero.y = this.y
   }

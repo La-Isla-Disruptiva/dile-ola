@@ -7,10 +7,13 @@ class World{
     this.gridXOffset = 8;
     this.gridYOffset = 18;
 
+    this.storage = config.storage
+
     this.touchCircle = config.touchCircle;
     this.ws = config.ws
      
     this.hero = new Hero({
+              uuid: this.storage.uuid,
               ckey: "laura",
               ctx: this.ctx,
               x: 5, y: 4,
@@ -58,10 +61,8 @@ class World{
         const data = JSON.parse(resp)
         if (data.uuid != ref.hero.uuid){
           if (data.uuid in ref.other_users ){
-            console.log("updated")
             ref.other_users[data.uuid].update(data)
           }else{
-            console.log("new user created", data)
             ref.other_users[data.uuid] = new Hero(data)
           }
         }
@@ -83,14 +84,12 @@ class World{
     
     //  draw npcs
     Object.values(this.map.gameObjects).forEach(object => {
-      //console.log(object)
       object.draw(this.ctx);
     })
 
      // draw other USERS
      
     Object.values(this.other_users).forEach(object => {
-      console.log(object)
       object.draw(this.ctx);
     })
 
