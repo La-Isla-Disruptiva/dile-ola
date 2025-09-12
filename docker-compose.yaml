@@ -5,9 +5,11 @@ services:
       context: .
     ports:
       - 8888:8888
+    volumes:
+      - ./server:/app
   web:
     image: nginx:latest
-    volumes:
-      - ./web:/usr/share/nginx/html
     ports:
       - 8080:80
+    volumes:
+      - ./web:/usr/share/nginx/html
