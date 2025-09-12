@@ -24,19 +24,12 @@ class Transporter {
     console.log(this.socket)
     // OPEN
     this.socket.onopen = (e) => {
-    //  const msg = {
-    //    password: this.password,
-    //    uuid: this.uuid,
-    //    ckey: "any",
-    //    x:   "0" ,
-    //    y:    "0"
-     // }
-    //  this.socket.send(JSON.stringify(msg));
       this.isConnected = true
       console.log("connection", this.socket)
     }
     // ERROR
     this.socket.onerror = (e) => {
+      this.isConnected = true
       console.log("transport error: ",e)
     }
     // CLOSE
