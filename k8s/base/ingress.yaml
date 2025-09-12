@@ -4,8 +4,9 @@ metadata:
   name: dile-ola-ws-ingress
   annotations:
     kubernetes.io/spec.ingressClassName: traefik
-#    cert-manager.io/cluster-issuer: letsencrypt-dev
-#    traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd
+    cert-manager.io/cluster-issuer: letsencrypt-dev
+    traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd
+    traefik.ingress.kubernetes.io/router.middlewares: default-ssl-header@kubernetescrd
 
 spec:
   rules:
@@ -19,7 +20,7 @@ spec:
                 name: dile-ola-ws-service
                 port:
                   number: 80
-#  tls:
-#    - secretName: dile-ola-ws-tls
-#      hosts:
-#        - ws.dile-ola.disruptiva.org
+  tls:
+    - secretName: dile-ola-ws-tls
+      hosts:
+        - ws.dile-ola.disruptiva.org

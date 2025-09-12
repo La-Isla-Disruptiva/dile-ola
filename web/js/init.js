@@ -16,7 +16,7 @@
     ws: {
          hostname: "ws.dile-ola.disruptiva.org",
          //hostname: parser.hostname,
-         protocol: "ws"
+         protocol: "wss"
     }
   });
   world.init();
