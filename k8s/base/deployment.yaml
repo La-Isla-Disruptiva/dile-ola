@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: dile-ola-ws
+  name: dile-ola-ws
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: dile-ola-ws
+  template:
+    metadata:
+      labels:
+        run: dile-ola-ws
+    spec:
+      imagePullSecrets:
+        - name: registry-pull
+      containers:
+        - name: dile-ola-ws
+          image: disruptiva.dev:5000/dile-ola-ws:0.0.2-1
+          ports:
+            - containerPort: 8888
+

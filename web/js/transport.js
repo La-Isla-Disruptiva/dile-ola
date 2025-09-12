@@ -12,7 +12,15 @@ class Transporter {
     //this.connectionFailed = 0
   }
   init(receivedCB){
-    this.socket = new WebSocket(this.protocol + "://" + this.hostname + ":" + this.port)
+
+    let uri
+    if (this.port != undefined){
+      uri= this.protocol + "://" + this.hostname + ":" + this.port
+    }else{
+      uri= this.protocol + "://" + this.hostname
+    }
+
+    this.socket = new WebSocket(uri)
     console.log(this.socket)
     // OPEN
     this.socket.onopen = (e) => {

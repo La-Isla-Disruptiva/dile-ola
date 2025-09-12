@@ -1,0 +1,6 @@
+#! /bin/bash
+
+set -eu
+source .env
+
+docker build -t $REGISTRY/$APP_NAME:$VERSION -f Dockerfile .
