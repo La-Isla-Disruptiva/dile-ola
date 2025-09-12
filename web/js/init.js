@@ -1,10 +1,20 @@
 (function(){
-  // development
-  // var parser = document.createElement('a');
-  // parser.href = window.location.href
+
+  let hostname
+  let port
+  let protocol
+  if (ENVIRONMENT === "local"){
+    var parser = document.createElement('a');
+    parser.href = window.location.href
+    hostname = parser.hostname,
+    port = 8888
+    protocol = "ws"
+  }else{
+    hostname = "ws.dile-ola.disruptiva.org"
+    protocol = "wss"
+  }
 
   var storage = new Storage()
-
   if ( !storage.uuid ){ // initialization at first connection
     storage.uuid = uuid()
   }
@@ -14,9 +24,9 @@
     touchCircle: document.querySelector(".touchCircle"),
     storage: storage,
     ws: {
-         hostname: "ws.dile-ola.disruptiva.org",
-         //hostname: parser.hostname,
-         protocol: "wss"
+         hostname: hostname,
+         port: port,
+         protocol: protocol
     }
   });
   world.init();

@@ -1,1 +1,3 @@
-const MAX_FPS = 40;
+
+// execution environment :   local | dev | prod
+const ENVIRONMENT="local"

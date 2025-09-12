@@ -9,19 +9,18 @@ class Transporter {
 
     this.socket   = null
     this.isConnected = false
-    //this.connectionFailed = 0
   }
-  init(receivedCB){
 
+  init(receivedCB){
+    console.log("initialise connection")
     let uri
     if (this.port != undefined){
       uri= this.protocol + "://" + this.hostname + ":" + this.port
     }else{
       uri= this.protocol + "://" + this.hostname
     }
-
+    console.log(uri)
     this.socket = new WebSocket(uri)
-    console.log(this.socket)
     // OPEN
     this.socket.onopen = (e) => {
       this.isConnected = true
@@ -29,11 +28,12 @@ class Transporter {
     }
     // ERROR
     this.socket.onerror = (e) => {
-      this.isConnected = true
       console.log("transport error: ",e)
     }
     // CLOSE
     this.socket.onclose = (e) => {
+      this.isConnected = false
+      this.retryConnection(receivedCB)
       if (e.wasClean) {
         console.log(`connection closed (code=${e.code} reason=${e.reason})`)
       }else{
@@ -47,6 +47,11 @@ class Transporter {
     }
   }
 
+  retryConnection(receivedCB){
+     setTimeout(()=>{
+      this.init(receivedCB)
+    },CONNECTION_RETRY_TIMEOUT)
+  }
     update(pos){
       if ( ! this.isConnected ) { return }
       const msg = {
