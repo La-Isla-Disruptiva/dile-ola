@@ -9,17 +9,18 @@ class Transporter {
 
     this.socket   = null
     this.isConnected = false
+
+    this.emitters = {}
   }
 
-  init(receivedCB){
-    console.log("initialise connection")
+  init(){
+   // console.log("initialise connection")
     let uri
     if (this.port != undefined){
       uri= this.protocol + "://" + this.hostname + ":" + this.port
     }else{
       uri= this.protocol + "://" + this.hostname
     }
-    console.log(uri)
     this.socket = new WebSocket(uri)
     // OPEN
     this.socket.onopen = (e) => {
@@ -33,7 +34,7 @@ class Transporter {
     // CLOSE
     this.socket.onclose = (e) => {
       this.isConnected = false
-      this.retryConnection(receivedCB)
+      this.retryConnection()
       if (e.wasClean) {
         console.log(`connection closed (code=${e.code} reason=${e.reason})`)
       }else{
@@ -42,26 +43,40 @@ class Transporter {
     }
     // RECEIVED
     this.socket.onmessage = (e) => {
-     // console.log("data received", e)
-      receivedCB(e.data)
+    //  console.log("data received", e)
+      const data = JSON.parse(e.data)
+      if(this.emitters[data.type] != undefined){
+        this.emitters[data.type].forEach((fn) =>{
+          fn(data)
+        })
+      }
     }
   }
 
-  retryConnection(receivedCB){
-     setTimeout(()=>{
-      this.init(receivedCB)
-    },CONNECTION_RETRY_TIMEOUT)
-  }
-    update(pos){
-      if ( ! this.isConnected ) { return }
-      const msg = {
-        password: this.password,
-        uuid: this.uuid,
-        ckey: pos.ckey,
-        x:    pos.x,
-        y:    pos.y
-      }
-      this.socket.send(JSON.stringify(msg)); 
+  on(type , callback){
+
+    if( ! (type in this.emitters) ){
+      this.emitters[type] = []
+    }
+    this.emitters[type].push(callback)
+
   }
 
+
+  retryConnection(){
+     setTimeout(()=>{
+      this.init()
+    },CONNECTION_RETRY_TIMEOUT)
+  }
+  update(uuid, action, state){
+    if ( ! this.isConnected ) { return }
+      const msg = {
+        token: this.password,
+        uuid: uuid,
+        type: action,
+        data:  state
+      }
+      //console.log(msg)
+      this.socket.send(JSON.stringify(msg)); 
+  }
 }
