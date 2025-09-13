@@ -14,106 +14,183 @@ import (
   "github.com/gorilla/websocket"
 )
 
-type webSocketHandler struct {
-	upgrader websocket.Upgrader
+type Client struct {
+	Uuid string
+	Conn *websocket.Conn
+	Pool *Pool
 }
 
-type Message struct {
-	Password string `json:"password"`
-	Uuid     string `json:"uuid"`
-	Ckey     string `json:"ckey"`
-	X        json.Number `json:"x"`
-	Y        json.Number `json:"y"`
+func Authenticate(token string) bool {
+		//  Validate server token
+		if strings.Trim(string(token),"\n") != "start" {
+			return false
+		}
+		return true
 }
 
-var clients = make(map[*websocket.Conn]bool)
-var broadcast = make(chan Message)
+func(c *Client) Read(){
+	defer func(){
+		c.Pool.Close <- c
+	}()
 
-func main() {
-	connectionHandler := webSocketHandler{
-		upgrader: websocket.Upgrader{
+	for {
+		var message InputMessage
+    err := c.Conn.ReadJSON(&message)
+		if err != nil {
+			log.Printf("Error %s when reading client's message ", err)
+			c.Conn.Close()
+		  return
+		}
+
+   if ! Authenticate(message.Token){
+		 c.Conn.Close()
+     return
+	 } 
+
+   c.Uuid = message.Uuid
+
+	 c.Pool.Register <- c
+
+	  if strings.TrimRight(message.Type, "\n") == "move" {	
+			output := BroadcastMessage{ Uuid: message.Uuid, Type: "move", Data: message.Data }
+			c.Pool.Broadcast <- output
+		}
+	  if strings.TrimRight(message.Type, "\n") == "connectionOffer" {
+			  log.Println("connection message")
+		    var data BasicMessage 
+			  if err := json.Unmarshal([]byte(message.Data), &data); err != nil {
+            log.Fatal(err)
+        }
+			output := SendtoMessage{ SenderUuid: c.Uuid, TargetUuid: data.Uuid, Type: "connectionOffer", Data: data.Data }
+			c.Pool.Sendto <- output
+		}	
+	}
+}
+
+type Pool struct {
+	Clients    map[string]*Client
+	Register   chan *Client
+	Unregister chan *Client
+	Broadcast  chan BroadcastMessage
+	Sendto     chan SendtoMessage
+	Close      chan *Client
+}
+
+
+type InputMessage struct {
+	Token string      `json:"token"`
+	Uuid  string      `json:"uuid"`
+	Type  string      `json:"type"`
+	Data  json.RawMessage
+}
+
+type BroadcastMessage struct {
+	Uuid  string      `json:"uuid"`
+	Type  string      `json:"type"`
+	Data  json.RawMessage
+}
+
+type SendtoMessage struct {
+	SenderUuid string      `json:"senderUuid"`
+	TargetUuid string      `json:"targetUuid"`
+	Type       string      `json:"type"`
+	Data       json.RawMessage
+}
+
+type BasicMessage struct {
+	Uuid  string      `json:"uuid"`
+	Data  json.RawMessage
+}
+
+func NewPool() *Pool {
+	return &Pool{
+		Register:   make(chan *Client),
+		Unregister: make(chan *Client),
+		Clients:    make(map[string]*Client),
+		Broadcast:  make(chan BroadcastMessage),
+		Sendto:     make(chan SendtoMessage),
+	}
+}
+
+func(pool *Pool) Start(){
+  for {
+    select {
+		case client := <-pool.Register:
+        pool.Clients[client.Uuid] = client
+			  log.Println("New user connected: ", client.Uuid)
+			break
+		case client := <-pool.Unregister:
+        delete(pool.Clients,client.Uuid)
+				log.Println("User disconnected:", client.Uuid)
+			break
+		case message:= <-pool.Broadcast:
+    		for _, client := range pool.Clients {
+					if client.Uuid != message.Uuid {
+		      	err:= client.Conn.WriteJSON(message)
+		      	if err != nil {
+		      		log.Printf("Error %s when sending message to client", err)
+	  					client.Pool.Close <- client
+						  return
+			      }
+					}
+    		}
+			break
+		case message:= <-pool.Sendto:
+			client := pool.Clients[message.TargetUuid]
+		    	err:= client.Conn.WriteJSON(message)
+		    	if err != nil {
+		    		log.Printf("Error %s when sending message to client", err)
+						client.Pool.Close <- client
+						return
+			    }
+			break
+		case client:= <- pool.Close:
+      client.Pool.Unregister <- client
+		  client.Conn.Close()
+		}
+	}
+}
+
+var upgrader = websocket.Upgrader{
 	    CheckOrigin: func(r *http.Request) bool {
 				// devlopment mode only
         return true
       },
-		},
+		}
+
+func Upgrade(w http.ResponseWriter, r *http.Request) (*websocket.Conn,error){
+	conn, err := upgrader.Upgrade(w,r,nil)
+	if err != nil {
+		log.Println("Erreur lors de l'upgrade http => ws  ",err)
+		return nil, err
 	}
-	http.Handle("/",connectionHandler)
-
-	go handleMessages()
-
-	log.Print("Starting server ...")
-	log.Fatal(http.ListenAndServe(":8888", nil))
+  return conn, nil
 }
 
-func (wsh webSocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request){
-  c, err := wsh.upgrader.Upgrade(w,r,nil)
+func serveWs(pool *Pool, w http.ResponseWriter, r *http.Request){
+  c, err := upgrader.Upgrade(w,r,nil)
 	if err != nil {
 		log.Printf("error %s when upgrading connection to websocket", err)
 		return
 	}
-	defer func(){
-		log.Println("Closing connection")
-		c.Close()
-	}()
-
-  clients[c] = true
-
-  for {
-		var msg Message
-    err := c.ReadJSON(&msg)
-		if err != nil {
-			log.Printf("Error %s when reading message from client", err)
-			c.Close()
-			delete(clients,c)
-		  return
-		}
-		// todo: adapter pour ReadJSON 
-    //if mt == websocket.BinaryMessage {
-		//	err = c.WriteMessage(websocket.TextMessage, []byte("server doesn't support binaty message"))
-		//	if err != nil {
-		//		log.Printf("Error %s when sending message to client", err)
-		//	}
-		//	return
-		//}
-		
-		//log.Printf("Receive message from %s", string(msg.Uuid))
-		if strings.Trim(string(msg.Password),"\n") != "start" {
-			err = c.WriteMessage(websocket.TextMessage, []byte("You did not say the magic word"))
-			delete(clients,c)
-			if err != nil {
-				log.Printf("Error %s when sending message to client", err)
-				return
-			}
-			continue
-		}
-
-		broadcast <- msg
-		//i:= 1
-		//for {
-		//	response := fmt.Sprintf("Notification %d", i)
-		//	err = c.WriteMessage(websocket.TextMessage, []byte(response))
-		//	if err != nil {
-		//		log.Printf("Error %s when sending message to client", err)
-		//		return
-		//	}
-		//	i = i+1
-		//	time.Sleep(2 * time.Second)
-		//}
+  client := &Client{
+		Uuid: "",
+		Conn: c,
+		Pool: pool,
 	}
+	client.Read()
 }
 
-func handleMessages(){
-	for {
-		msg := <-broadcast
+func main(){
+	log.Println("Start server")
+  pool := NewPool()
 
-		for client := range clients {
-			err:= client.WriteJSON(msg)
-			if err != nil {
-				log.Printf("Error %s when sending message to client", err)
-			  client.Close()	
-				delete(clients, client)
-			}
-		}
-	}
+	go pool.Start()
+	
+  http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request){
+		serveWs(pool,w,r)
+	})
+
+	http.ListenAndServe(":8888", nil)
+
 }

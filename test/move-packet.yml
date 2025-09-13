@@ -1,0 +1,8 @@
+token: start
+uuid: user1234
+type: move
+data:
+  ckey: laurent
+  direction: up
+  x: 16
+  y: 2

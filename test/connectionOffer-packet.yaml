@@ -1,0 +1,7 @@
+token: start
+uuid: user4321
+type: connectionOffer
+data:
+  uuid: user1234
+  data: 
+    dsp: 123esd
