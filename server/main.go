@@ -58,7 +58,7 @@ func(c *Client) Read(){
 			output := BroadcastMessage{ Uuid: message.Uuid, Type: "move", Data: message.Data }
 			c.Pool.Broadcast <- output
 		}
-	  if strings.TrimRight(message.Type, "\n") == "connectionOffer" {
+	  if strings.TrimRight(message.Type, "\n") == "p2pConnection" {
 			  log.Println("connection message")
 		    var data BasicMessage 
 			  if err := json.Unmarshal([]byte(message.Data), &data); err != nil {
