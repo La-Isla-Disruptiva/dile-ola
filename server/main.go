@@ -30,7 +30,8 @@ func Authenticate(token string) bool {
 
 func(c *Client) Read(){
 	defer func(){
-		c.Pool.Close <- c
+    c.Pool.Unregister <- c
+	  c.Conn.Close()
 	}()
 
 	for {
@@ -39,7 +40,7 @@ func(c *Client) Read(){
 		if err != nil {
 			log.Printf("Error %s when reading client's message ", err)
 			c.Conn.Close()
-		  return
+		  break
 		}
 
    if ! Authenticate(message.Token){
@@ -47,8 +48,10 @@ func(c *Client) Read(){
      return
 	 } 
 
+
    c.Uuid = message.Uuid
 
+	 //log.Println("message from", message.Uuid, message.Type)
 	 c.Pool.Register <- c
 
 	  if strings.TrimRight(message.Type, "\n") == "move" {	
@@ -81,25 +84,25 @@ type InputMessage struct {
 	Token string      `json:"token"`
 	Uuid  string      `json:"uuid"`
 	Type  string      `json:"type"`
-	Data  json.RawMessage
+	Data  json.RawMessage `json:"data"`
 }
 
 type BroadcastMessage struct {
 	Uuid  string      `json:"uuid"`
 	Type  string      `json:"type"`
-	Data  json.RawMessage
+	Data  json.RawMessage `json:"data"`
 }
 
 type SendtoMessage struct {
 	SenderUuid string      `json:"senderUuid"`
 	TargetUuid string      `json:"targetUuid"`
 	Type       string      `json:"type"`
-	Data       json.RawMessage
+	Data       json.RawMessage `json:"data"`
 }
 
 type BasicMessage struct {
-	Uuid  string      `json:"uuid"`
-	Data  json.RawMessage
+	Uuid  string           `json:"uuid"`
+	Data  json.RawMessage `json:"data"`
 }
 
 func NewPool() *Pool {
@@ -117,7 +120,7 @@ func(pool *Pool) Start(){
     select {
 		case client := <-pool.Register:
         pool.Clients[client.Uuid] = client
-			  log.Println("New user connected: ", client.Uuid)
+			 // log.Println("New user connected: ", client.Uuid)
 			break
 		case client := <-pool.Unregister:
         delete(pool.Clients,client.Uuid)
@@ -136,17 +139,15 @@ func(pool *Pool) Start(){
     		}
 			break
 		case message:= <-pool.Sendto:
-			client := pool.Clients[message.TargetUuid]
-		    	err:= client.Conn.WriteJSON(message)
-		    	if err != nil {
-		    		log.Printf("Error %s when sending message to client", err)
-						client.Pool.Close <- client
-						return
-			    }
-			break
-		case client:= <- pool.Close:
-      client.Pool.Unregister <- client
-		  client.Conn.Close()
+			client, ok := pool.Clients[message.TargetUuid]
+			if ok {
+		   	err:= client.Conn.WriteJSON(message)
+		   	if err != nil {
+		   		log.Printf("Error %s when sending message to client", err)
+					client.Pool.Close <- client
+			  	return
+			  }
+			}
 		}
 	}
 }
