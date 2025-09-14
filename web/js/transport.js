@@ -25,7 +25,7 @@ class Transporter {
     // OPEN
     this.socket.onopen = (e) => {
       this.isConnected = true
-      console.log("connection", this.socket)
+     // console.log("connection", this.socket)
     }
     // ERROR
     this.socket.onerror = (e) => {
@@ -35,11 +35,13 @@ class Transporter {
     this.socket.onclose = (e) => {
       this.isConnected = false
       this.retryConnection()
+   /*  
       if (e.wasClean) {
         console.log(`connection closed (code=${e.code} reason=${e.reason})`)
-      }else{
+      }document.removeEventListenerse{
         console.log("connection died", e)
       }
+      */
     }
     // RECEIVED
     this.socket.onmessage = (e) => {
@@ -78,7 +80,7 @@ class Transporter {
         data:  state
       }
     if(action === "p2pConnection"){
-      console.log("data send: ",msg)
+     // console.log("data send: ",msg)
     }
 
       this.socket.send(JSON.stringify(msg)); 

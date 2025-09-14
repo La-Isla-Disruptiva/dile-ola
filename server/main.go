@@ -135,7 +135,7 @@ func(pool *Pool) Start(){
 			break
 		case client := <-pool.Unregister:
 			//output := BroadcastMessage{Uuid:client.Uuid, Type: "disconnected"}
-				log.Println("User disconnected:", client.Uuid)
+				//log.Println("User disconnected:", client.Uuid)
 				//pool.Broadcast <- output
         delete(pool.Clients,client.Uuid)
 			break

@@ -30,13 +30,16 @@ class WebrtcController{
     this.emitters[type].push(callback)
   }
 
-  async connect(uuid){
+  async start(){
     this.localStream = await navigator.mediaDevices.getUserMedia({audio: true, video: true});
     this.localVideo.srcObject = this.localStream;
-
     if(typeof this.startCB === 'function' ){
       this.startCB()
     }
+  }
+
+  async connect(uuid){
+    await this.start()
     this.signaling.postMessage({ 
       uuid: uuid,  
       data: {type: 'ready'}
@@ -79,8 +82,8 @@ createPeerConnection(uuid) {
       message.sdpMid = e.candidate.sdpMid;
       message.sdpMLineIndex = e.candidate.sdpMLineIndex;
     }
-      console.log("createPeerConnection target uuid: ", uuid )
-      console.log("createPeerConnection",message)
+      //console.log("createPeerConnection target uuid: ", uuid )
+      //console.log("createPeerConnection",message)
     this.signaling.postMessage({
         uuid: uuid,
 //        type: "candidate",
@@ -92,6 +95,7 @@ createPeerConnection(uuid) {
 }
 
   async makeCall(uuid) {
+    //console.log("make a call to ", uuid)
     await this.createPeerConnection(uuid);
 
     const offer = await this.pc.createOffer();
@@ -105,7 +109,7 @@ createPeerConnection(uuid) {
 
   async handleOffer(uuid,offer) {
     if (this.pc) {
-      console.error('existing peerconnection');
+      //console.error('existing peerconnection');
       return;
     }
     await this.createPeerConnection(uuid);
@@ -122,13 +126,13 @@ createPeerConnection(uuid) {
 
   async handleAnswer(answer) {
     if (! this.pc) {
-      console.error('no peerconnection');
+    //  console.error('no peerconnection');
       return;
     }
     await this.pc.setRemoteDescription(answer);
   }
   async handleCandidate(candidate) {
-    console.log("candidate in ")
+    //console.log("candidate in ")
     if (!this.pc) {
       console.error('no peerconnection');
       return;

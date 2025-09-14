@@ -30,8 +30,9 @@ class World{
 
     this.map = new WorldMap(window.worldMaps.DemoRoom) 
 
-    console.log(this)
-  };
+   // console.log(this)
+  }
+
   startGameLoop(){
     const step = () => {
       requestAnimationFrame((currentTimeMs) => {
@@ -88,11 +89,6 @@ class World{
         this.talkingto
       }
     })
-
-   
-
-
-
     //  Ajuste la position des autres personnages
     this.transport.on("move",(data) => {
 
@@ -129,55 +125,63 @@ class World{
 
     })
 
+    this.tryConnection.bind(this)
+    this.transport.on("p2pConnection",(resp) => this.tryConnection(resp)
 
-    this.transport.on("p2pConnection",(data)=>{
-//      this.webrtcController.signaling.onmessage = resp => {
-        if (!this.webrtcController.localStream) {
-         console.log('not ready yet');
-         return;
-      }
-      console.log("webrtc connection data")
-      console.log(e)
-      console.log(resp)
-      switch (resp.data.type){
-        case "offer":
-          this.webrtcController.handleOffer(e.senderUuid,resp.data  )
-          break
-        case "answer":
-          this.webrtcController.handleAnswer(resp.data)
-          break
-        case "candidate":
-          console.log("pass to handlecandidate: ", resp.data)
-          this.webrtcController.handleCandidate(resp.data  )
-          break
-        case "ready":
-          if( this.webrtcController.isConnected){
-            console.log("already in a call")
-            return
-          }
-          this.webrtcController.makeCall(e.senderUuid)
-          break
-        case "bye":
-          if( this.webrtcController.isConnected){
-            this.webrtcController.hangup()
-            this.talkingto = null
-          }
-          break
-        default:
-          break
+    )
 
-
-      }
-    }
-    )   
-    this.transport.on("disconnected",(data)=>{
-      console.log("user disconnected: ", data)
+      this.transport.on("disconnected",(data)=>{
+      //console.log("user disconnected: ", data)
        delete this.other_users[data.uuid]
     })
   this.startGameLoop();
   }
 
-  
+
+
+  tryConnection(e){
+    //console.log("try connection")
+    if (! this.webrtcController.localStream) {
+      //console.log('not ready yet');
+      this.webrtcController.start()
+      setTimeout(()=>{
+        this.tryConnection(e)
+      },200)
+      return;
+    }
+    //console.log("webrtc connection data")
+    //console.log(e)
+    switch (e.data.type){
+      case "offer":
+        this.webrtcController.handleOffer(e.senderUuid,e.data  )
+        break
+      case "answer":
+        this.webrtcController.handleAnswer(e.data)
+        break
+      case "candidate":
+        //console.log("pass to handlecandidate: ", e.data)
+        this.webrtcController.handleCandidate(e.data  )
+        break
+      case "ready":
+        if( this.webrtcController.isConnected){
+         // console.log("already in a call")
+          return
+        }
+        this.webrtcController.makeCall(e.senderUuid)
+        break
+      case "bye":
+        if( this.webrtcController.isConnected){
+          this.webrtcController.hangup()
+          this.talkingto = null
+        }
+        break
+      default:
+        break
+    }
+  } 
+
+
+
 
   draw(){
     // todo: séparer le update du draw (??)
