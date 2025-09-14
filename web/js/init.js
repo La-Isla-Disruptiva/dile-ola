@@ -14,10 +14,13 @@
     protocol = "wss"
   }
 
-  var storage = new Storage()
-  if ( !storage.uuid ){ // initialization at first connection
-    storage.uuid = uuid()
-  }
+//  var storage = new Storage()
+//  if ( !storage.uuid ){ // initialization at first connection
+//    storage.uuid = uuid()
+//  }
+
+// dev webrtc
+  var storage = { uuid: uuid()}
 
   const world = new World({
     element: document.querySelector(".game-container"),
@@ -31,3 +34,4 @@
   });
   world.init();
 })(); 
+

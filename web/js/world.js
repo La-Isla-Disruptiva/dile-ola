@@ -9,11 +9,8 @@ class World{
 
     this.storage = config.storage
     this.transport = null
-//    this.webrtcController = new WebrtcController({
-//     localVideo: document.querySelector("#localVideo"),
-//      remoteVideo: document.querySelector("#remoteVideo"),
-//    })
-  
+    this.webrtcController = null
+
     this.touchCircle = config.touchCircle;
     this.ws = config.ws
      
@@ -26,6 +23,7 @@ class World{
             }),
 
     this.other_users = {}
+    this.talkingto = null
 
     this.FRAME_INTERVAL_MS = 1000 / MAX_FPS;
     this.previousTimeMs = 0;
@@ -54,6 +52,8 @@ class World{
     this.inputControl.init();
 
 
+
+
     this.transport = new Transporter({
       uuid: this.hero.uuid,
       hostname: this.ws.hostname,
@@ -64,49 +64,116 @@ class World{
 //    this.webrtcController.init()
     //  Action permettant de se connecter à un autre utilisateur
     document.addEventListener("keydown", e => {
- 
-      console.log("keydown!", e)
+
+      if(e.code === "Space"){
+
+        console.log("hero uuid", this.hero.uuid)
+        console.log("other heros: ", this.other_users)
+      }
+
+      //console.log("keydown!", e)
 
       if(e.code === "Enter"){
-        console.log("start connection process")
-//        this.webrtcController.start()
+        //console.log("start connection process")
+        let [other_user]  = Object.keys(this.other_users)
+        this.talkingto = other_user
+        // todo: do only if user is found
+        this.webrtcController.connect(other_user)
+        }
 
-//        let [other_user]  = Object.keys(this.other_users)
-//        this.transport.update(this.hero.uuid,"connectionOffer",{
-//          uuid: other_user, 
-//          data: { dps: 1234}
-//        })
+     if(e.code === "Escape"){
+      //console.log("start disconnection process")
+        // todo: do only if user is found
+        this.webrtcController.disconnect(this.talkingto)
+        this.talkingto
+      }
+    })
+
+   
+
+
+
+    //  Ajuste la position des autres personnages
+    this.transport.on("move",(data) => {
+
+     // if(data.uuid != this.talkingto){
+     //   console.log(data)
+     // }
+
+      if ( data.uuid != this.hero.uuid){
+        if (data.uuid in this.other_users ){
+          this.other_users[data.uuid].update(data.data)
+        }else{
+          this.other_users[data.uuid] = new Hero({
+            uuid: data.uuid, 
+            ckey: data.data.ckey,
+            direction: data.data.direction,
+            x: data.data.x,
+            y: data.data.y
+          })
         }
       }
-    )
-    
+    })
 
-    function genReceivedCB(ref){
-     return (data) => {
-   //     console.log(data)
-        if (data.type === "move" && data.uuid != ref.hero.uuid){
-          if (data.uuid in ref.other_users ){
-            ref.other_users[data.uuid].update(data.data)
-          }else{
-            ref.other_users[data.uuid] = new Hero({
-              uuid: data.uuid, 
-              ckey: data.data.ckey,
-              direction: data.data.direction,
-              x: data.data.x,
-              y: data.data.y
-            })
-          }
-        }else if(data.type === "p2pConnection"){
-          console.log("demande de connection: ", data)
-          init_videochat()
+
+    this.webrtcController =  new WebrtcController({
+      localVideo: document.querySelector("#localVideo"),
+      remoteVideo: document.querySelector("#remoteVideo"),
+//      signaling: new BroadcastChannel('webrtc')
+     signaling: {
+        postMessage: (data)=> {
+         // console.log("postMessage",data) 
+          this.transport.update(this.hero.uuid, "p2pConnection", data)
         }
-        //console.log(ref.other_users)
+      }
+
+    })
+
+
+    this.transport.on("p2pConnection",(data)=>{
+//      this.webrtcController.signaling.onmessage = resp => {
+        if (!this.webrtcController.localStream) {
+         console.log('not ready yet');
+         return;
+      }
+      console.log("webrtc connection data")
+      console.log(e)
+      console.log(resp)
+      switch (resp.data.type){
+        case "offer":
+          this.webrtcController.handleOffer(e.senderUuid,resp.data  )
+          break
+        case "answer":
+          this.webrtcController.handleAnswer(resp.data)
+          break
+        case "candidate":
+          console.log("pass to handlecandidate: ", resp.data)
+          this.webrtcController.handleCandidate(resp.data  )
+          break
+        case "ready":
+          if( this.webrtcController.isConnected){
+            console.log("already in a call")
+            return
+          }
+          this.webrtcController.makeCall(e.senderUuid)
+          break
+        case "bye":
+          if( this.webrtcController.isConnected){
+            this.webrtcController.hangup()
+            this.talkingto = null
+          }
+          break
+        default:
+          break
+
+
       }
     }
-
-    this.transport.on("move",genReceivedCB(this))
-
-    this.startGameLoop();
+    )   
+    this.transport.on("disconnected",(data)=>{
+       delete this.other_users[data.uuid]
+    })
+  this.startGameLoop();
   }
 
   

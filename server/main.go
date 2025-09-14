@@ -45,27 +45,37 @@ func(c *Client) Read(){
 
    if ! Authenticate(message.Token){
 		 c.Conn.Close()
-     return
+     break 
 	 } 
 
 
    c.Uuid = message.Uuid
 
-	 //log.Println("message from", message.Uuid, message.Type)
+	// log.Println("message from", message.Uuid, message.Type)
 	 c.Pool.Register <- c
 
 	  if strings.TrimRight(message.Type, "\n") == "move" {	
+			//log.Println(message)
 			output := BroadcastMessage{ Uuid: message.Uuid, Type: "move", Data: message.Data }
 			c.Pool.Broadcast <- output
+			
 		}
+
+  
+//	  if strings.TrimRight(message.Type, "\n") != "move" {	
+//			log.Println(message)
+//		}
+
 	  if strings.TrimRight(message.Type, "\n") == "p2pConnection" {
-			  log.Println("connection message")
+			  //log.Println("connection message")
 		    var data BasicMessage 
 			  if err := json.Unmarshal([]byte(message.Data), &data); err != nil {
             log.Fatal(err)
+						break
         }
-			output := SendtoMessage{ SenderUuid: c.Uuid, TargetUuid: data.Uuid, Type: "connectionOffer", Data: data.Data }
+			output := SendtoMessage{ SenderUuid: c.Uuid, TargetUuid: data.Uuid, Type: "p2pConnection", Data: data.Data }
 			c.Pool.Sendto <- output
+			
 		}	
 	}
 }
@@ -76,7 +86,6 @@ type Pool struct {
 	Unregister chan *Client
 	Broadcast  chan BroadcastMessage
 	Sendto     chan SendtoMessage
-	Close      chan *Client
 }
 
 
@@ -120,32 +129,45 @@ func(pool *Pool) Start(){
     select {
 		case client := <-pool.Register:
         pool.Clients[client.Uuid] = client
-			 // log.Println("New user connected: ", client.Uuid)
+			  log.Println("New user connected: ", client.Uuid)
 			break
 		case client := <-pool.Unregister:
-        delete(pool.Clients,client.Uuid)
+			//output := BroadcastMessage{Uuid:client.Uuid, Type: "disconnected"}
 				log.Println("User disconnected:", client.Uuid)
+				//pool.Broadcast <- output
+        delete(pool.Clients,client.Uuid)
 			break
 		case message:= <-pool.Broadcast:
+			  //log.Println(pool.Clients)
     		for _, client := range pool.Clients {
+					//log.Println(message.Uuid, client.Uuid)
 					if client.Uuid != message.Uuid {
+					  //log.Println(message)
 		      	err:= client.Conn.WriteJSON(message)
 		      	if err != nil {
 		      		log.Printf("Error %s when sending message to client", err)
-	  					client.Pool.Close <- client
 						  return
 			      }
 					}
     		}
 			break
 		case message:= <-pool.Sendto:
+
+	   log.Println("message: ", message)
+          j, err := json.Marshal(&message.Data)
+    if err != nil {
+        panic(err)
+    }
+		log.Println("data send: ",string(j))
+		log.Println("clients available: ", pool.Clients)
+
 			client, ok := pool.Clients[message.TargetUuid]
 			if ok {
+				log.Println("send to ", message.TargetUuid)
 		   	err:= client.Conn.WriteJSON(message)
 		   	if err != nil {
 		   		log.Printf("Error %s when sending message to client", err)
-					client.Pool.Close <- client
-			  	return
+			  	break
 			  }
 			}
 		}

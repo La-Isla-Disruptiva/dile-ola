@@ -5,34 +5,56 @@ class WebrtcController{
 
     this.signaling = config.signaling
 
-    this.startCB: config.startCB
-    this.stopCB: config.stopCB
-
     this.ps = null
-    this.localstream = null
+    this.localStream = null
+
+    this.emitters = {
+       start: [],
+       stop: []
+    }
+
   }
-
-
+  
+  get isConnected(){
+    if(this.pc){
+      return true
+    }
+    return false
+  }
+  
   init(){
 
   }
 
-  async start(){
+  on(type, callback){
+    this.emitters[type].push(callback)
+  }
+
+  async connect(uuid){
     this.localStream = await navigator.mediaDevices.getUserMedia({audio: true, video: true});
     this.localVideo.srcObject = this.localStream;
+
     if(typeof this.startCB === 'function' ){
       this.startCB()
     }
-    //  this.signaling.postMessage({type: 'ready'});
+    this.signaling.postMessage({ 
+      uuid: uuid,  
+      data: {type: 'ready'}
+//      ,type: 'ready'
+    });
 
   }
 
-  async stop(){  
+  async disconnect(uuid){  
     this.hangup();
-    this.signaling.postMessage({type: 'bye'});    
+    this.signaling.postMessage({
+      uuid: uuid, 
+      data: { type: 'bye' }
+//      ,type: 'bye'
+    });    
   }
 
-async function hangup() {
+  async hangup() {
     if (this.pc) {
       this.pc.close();
       this.pc = null;
@@ -42,7 +64,79 @@ class WebrtcController{
     if(typeof this.startCB === 'function' ){
       this.startCB()
     }
+  };
 
-};
 
+createPeerConnection(uuid) {
+  this.pc = new RTCPeerConnection();
+  this.pc.onicecandidate = e => {
+    const message = {
+      type: 'candidate',
+      candidate: null,
+    };
+    if (e.candidate) {
+      message.candidate = e.candidate.candidate;
+      message.sdpMid = e.candidate.sdpMid;
+      message.sdpMLineIndex = e.candidate.sdpMLineIndex;
+    }
+      console.log("createPeerConnection target uuid: ", uuid )
+      console.log("createPeerConnection",message)
+    this.signaling.postMessage({
+        uuid: uuid,
+//        type: "candidate",
+        data: message
+      });
+  };
+  this.pc.ontrack = e => this.remoteVideo.srcObject = e.streams[0];
+  this.localStream.getTracks().forEach(track => this.pc.addTrack(track, this.localStream));
+}
+
+  async makeCall(uuid) {
+    await this.createPeerConnection(uuid);
+
+    const offer = await this.pc.createOffer();
+    this.signaling.postMessage({
+//      type: "offer",
+      uuid: uuid,
+      data: {type: 'offer', sdp: offer.sdp}
+    });
+    await this.pc.setLocalDescription(offer);
+  }
+
+  async handleOffer(uuid,offer) {
+    if (this.pc) {
+      console.error('existing peerconnection');
+      return;
+    }
+    await this.createPeerConnection(uuid);
+    await this.pc.setRemoteDescription(offer);
+
+    const answer = await this.pc.createAnswer();
+    this.signaling.postMessage({
+//      type: 'answer',
+      uuid: uuid, 
+      data: {type: 'answer', sdp: answer.sdp}
+    });
+    await this.pc.setLocalDescription(answer);
+  }
+
+  async handleAnswer(answer) {
+    if (! this.pc) {
+      console.error('no peerconnection');
+      return;
+    }
+    await this.pc.setRemoteDescription(answer);
+  }
+  async handleCandidate(candidate) {
+    console.log("candidate in ")
+    if (!this.pc) {
+      console.error('no peerconnection');
+      return;
+    }
+    if (! candidate.candidate) {
+      await this.pc.addIceCandidate(null);
+    } else {
+      await this.pc.addIceCandidate(candidate);
+    }
+  }
 }

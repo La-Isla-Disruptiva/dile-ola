@@ -43,8 +43,8 @@ class Transporter {
     }
     // RECEIVED
     this.socket.onmessage = (e) => {
-    //  console.log("data received", e)
       const data = JSON.parse(e.data)
+      //console.log("data received", e)
       if(this.emitters[data.type] != undefined){
         this.emitters[data.type].forEach((fn) =>{
           fn(data)
@@ -69,6 +69,7 @@ class Transporter {
     },CONNECTION_RETRY_TIMEOUT)
   }
   update(uuid, action, state){
+
     if ( ! this.isConnected ) { return }
       const msg = {
         token: this.password,
@@ -76,7 +77,10 @@ class Transporter {
         type: action,
         data:  state
       }
-      //console.log(msg)
+    if(action === "p2pConnection"){
+      console.log("data send: ",msg)
+    }
+
       this.socket.send(JSON.stringify(msg)); 
   }
 }
