@@ -14,7 +14,7 @@ class Transporter {
   }
 
   init(){
-   // console.log("initialise connection")
+    if(DEBUG_WEBSOCKET){console.log("initialise connection")}
     let uri
     if (this.port != undefined){
       uri= this.protocol + "://" + this.hostname + ":" + this.port
@@ -35,18 +35,18 @@ class Transporter {
     this.socket.onclose = (e) => {
       this.isConnected = false
       this.retryConnection()
-   /*  
+   if(DEBUG_WEBSOCKET){  
       if (e.wasClean) {
         console.log(`connection closed (code=${e.code} reason=${e.reason})`)
-      }document.removeEventListenerse{
+      }else{
         console.log("connection died", e)
       }
-      */
+    }
     }
     // RECEIVED
     this.socket.onmessage = (e) => {
       const data = JSON.parse(e.data)
-      //console.log("data received", e)
+      //if(DEBUG_WEBSOCKET){console.log("data received", e)}
       if(this.emitters[data.type] != undefined){
         this.emitters[data.type].forEach((fn) =>{
           fn(data)

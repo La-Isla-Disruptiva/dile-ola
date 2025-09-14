@@ -1,5 +1,6 @@
 (function(){
 
+  // CONFIG WEBRTC
   let hostname
   let port
   let protocol
@@ -14,14 +15,18 @@
     protocol = "wss"
   }
 
-//  var storage = new Storage()
-//  if ( !storage.uuid ){ // initialization at first connection
-//    storage.uuid = uuid()
-//  }
+  // SETUP STORAGE
+  let storage
+  if (ENVIRONMENT === "local"){
+    storage = { uuid: uuid()}
+  }else{
+    storage = new Storage()
+    if ( !storage.uuid ){ // initialization at first connection
+      storage.uuid = uuid()
+    }
+  }
 
-// dev webrtc
-  var storage = { uuid: uuid()}
-
+  // START !!
   const world = new World({
     element: document.querySelector(".game-container"),
     touchCircle: document.querySelector(".touchCircle"),

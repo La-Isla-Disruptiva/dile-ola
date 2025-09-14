@@ -86,7 +86,7 @@ class World{
       //console.log("start disconnection process")
         // todo: do only if user is found
         this.webrtcController.disconnect(this.talkingto)
-        this.talkingto
+        this.talkingto = null
       }
     })
     //  Ajuste la position des autres personnages
@@ -140,17 +140,17 @@ class World{
 
 
   tryConnection(e){
-    //console.log("try connection")
+    if(DEBUG_WEBRTC){console.log("try connection")}
     if (! this.webrtcController.localStream) {
-      //console.log('not ready yet');
+      if(DEBUG_WEBRTC){console.log('not ready yet');}
       this.webrtcController.start()
       setTimeout(()=>{
         this.tryConnection(e)
       },200)
       return;
     }
-    //console.log("webrtc connection data")
-    //console.log(e)
+    if(DEBUG_WEBRTC){console.log("webrtc connection data")}
+    if(DEBUG_WEBRTC){console.log(e)}
     switch (e.data.type){
       case "offer":
         this.webrtcController.handleOffer(e.senderUuid,e.data  )

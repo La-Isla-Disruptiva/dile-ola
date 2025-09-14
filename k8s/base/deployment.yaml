@@ -15,10 +15,10 @@ spec:
         run: dile-ola-ws
     spec:
       imagePullSecrets:
-        - name: registry-pull
+        - name: default-pull-secret
       containers:
         - name: dile-ola-ws
-          image: disruptiva.dev:5000/dile-ola-ws:0.0.2-1
+          image: disruptiva.dev:5000/dile-ola-ws:0.0.3-2
           ports:
             - containerPort: 8888
 

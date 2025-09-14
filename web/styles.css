@@ -90,8 +90,9 @@ body {
 
 video {
   width: 90px;
-  border: 2px solid grey;
-  border-radius: 20px;
+/*  border: 2px solid grey;
+*/
+border-radius: 20px;
   box-sizing: border-box;
   aspect-ratio: 1/1;
   z-index: 1000;
