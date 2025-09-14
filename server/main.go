@@ -30,6 +30,8 @@ func Authenticate(token string) bool {
 
 func(c *Client) Read(){
 	defer func(){
+			output := BroadcastMessage{Uuid:c.Uuid, Type: "disconnected"}
+			c.Pool.Broadcast <- output
     c.Pool.Unregister <- c
 	  c.Conn.Close()
 	}()
@@ -129,7 +131,7 @@ func(pool *Pool) Start(){
     select {
 		case client := <-pool.Register:
         pool.Clients[client.Uuid] = client
-			  log.Println("New user connected: ", client.Uuid)
+			  //log.Println("New user connected: ", client.Uuid)
 			break
 		case client := <-pool.Unregister:
 			//output := BroadcastMessage{Uuid:client.Uuid, Type: "disconnected"}
@@ -153,17 +155,17 @@ func(pool *Pool) Start(){
 			break
 		case message:= <-pool.Sendto:
 
-	   log.Println("message: ", message)
-          j, err := json.Marshal(&message.Data)
-    if err != nil {
-        panic(err)
-    }
-		log.Println("data send: ",string(j))
-		log.Println("clients available: ", pool.Clients)
+	  // log.Println("message: ", message)
+    //      j, err := json.Marshal(&message.Data)
+    //if err != nil {
+    //    panic(err)
+   // }
+		//log.Println("data send: ",string(j))
+		//log.Println("clients available: ", pool.Clients)
 
 			client, ok := pool.Clients[message.TargetUuid]
 			if ok {
-				log.Println("send to ", message.TargetUuid)
+				//log.Println("send to ", message.TargetUuid)
 		   	err:= client.Conn.WriteJSON(message)
 		   	if err != nil {
 		   		log.Printf("Error %s when sending message to client", err)

@@ -171,6 +171,7 @@ class World{
     }
     )   
     this.transport.on("disconnected",(data)=>{
+      console.log("user disconnected: ", data)
        delete this.other_users[data.uuid]
     })
   this.startGameLoop();
