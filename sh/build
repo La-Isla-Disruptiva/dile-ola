@@ -3,4 +3,6 @@
 set -eu
 source .env
 
-docker build -t $REGISTRY/$APP_NAME:$VERSION -f Dockerfile.dev .
+docker build -t $REGISTRY/$APP_WS_NAME:$VERSION -f Dockerfile.dev .
+
+docker build -t $REGISTRY/$APP_NAME:$VERSION -f Dockerfile.web .

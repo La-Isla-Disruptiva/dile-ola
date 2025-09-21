@@ -1,0 +1,20 @@
+#! /bin/bash
+
+set -eu
+source .env
+
+#output=$(git status --porcelain) && [ -z "$output" ] || { >&2 echo "erreur: Ce repo n'est pas propre" ; exit 1 ; }
+
+#OLD_VERSION=$(cat package.json | jq -r .version)
+#npm version patch
+
+#git reset --soft HEAD~1
+#VERSION=$(cat package.json | jq -r .version)
+
+cat k8s/base/deployment.yaml | yq -o=json . | jq --arg val "$REGISTRY/$APP_WS_NAME:$VERSION" '.spec.template.spec.containers[0].image |= $val' | yq -Poy . >k8s/base/deployment.yaml.new
+mv k8s/base/deployment.yaml.new k8s/base/deployment.yaml
+
+cat k8s/base/deployment_web.yaml | yq -o=json . | jq --arg val "$REGISTRY/$APP_NAME:$VERSION" '.spec.template.spec.containers[0].image |= $val' | yq -Poy . >k8s/base/deployment_web.yaml.new
+mv k8s/base/deployment_web.yaml.new k8s/base/deployment_web.yaml
+
+# git commit -am "$OLD_VERSION => $VERSION"
