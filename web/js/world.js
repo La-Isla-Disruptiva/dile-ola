@@ -71,24 +71,24 @@ class World{
         console.log("hero uuid", this.hero.uuid)
         console.log("other heros: ", this.other_users)
       }
-
+    })
       //console.log("keydown!", e)
 
-      if(e.code === "Enter"){
-        //console.log("start connection process")
-        let [other_user]  = Object.keys(this.other_users)
-        this.talkingto = other_user
+//      if(e.code === "Enter"){
+//        //console.log("start connection process")
+//        let [other_user]  = Object.keys(this.other_users)
+//        this.talkingto = other_user
         // todo: do only if user is found
-        this.webrtcController.connect(other_user)
-        }
+//        this.webrtcController.invite(other_user)
+//        }
 
-     if(e.code === "Escape"){
+//     if(e.code === "Escape"){
       //console.log("start disconnection process")
         // todo: do only if user is found
-        this.webrtcController.disconnect(this.talkingto)
-        this.talkingto = null
-      }
-    })
+//        this.webrtcController.disconnect(this.talkingto)
+//        this.talkingto = null
+//      }
+//    })
     //  Ajuste la position des autres personnages
     this.transport.on("move",(data) => {
 
@@ -111,6 +111,35 @@ class World{
       }
     })
 
+    this.accept_button = document.querySelector(".accept-button")
+
+    this.accept_button.onclick = (e) => {
+      if(DEBUG_WEBRTC){console.log("accept button clicked")}
+      this.webrtcController.accept(this.talkingto)
+      this.hangup_button.style.visibility = "visible"
+      this.accept_button.style.visibility = "hidden"
+      this.invite_button.style.visibility = "hidden"
+    }
+
+    this.hangup_button = document.querySelector(".hangup-button")
+    this.hangup_button.onclick = (e) => {
+      if(DEBUG_WEBRTC){console.log("hangup button clicked")}
+      this.webrtcController.disconnect(this.talkingto)
+      this.hangup_button.style.visibility = "hidden"
+      this.accept_button.style.visibility = "hidden"
+      this.invite_button.style.visibility = "visible"
+      this.talkingto = null
+    }
+    this.invite_button = document.querySelector(".invite-button")
+    this.invite_button.onclick = (e) => {
+      if(DEBUG_WEBRTC){console.log("invite button clicked")}
+      let [other_user]  = Object.keys(this.other_users)
+      this.talkingto = other_user
+      this.webrtcController.invite(other_user)
+      this.hangup_button.style.visibility = "visible"
+      this.accept_button.style.visibility = "hidden"
+      this.invite_button.style.visibility = "hidden"
+    }
 
     this.webrtcController =  new WebrtcController({
       localVideo: document.querySelector("#localVideo"),
@@ -126,32 +155,44 @@ class World{
     })
 
     this.tryConnection.bind(this)
-    this.transport.on("p2pConnection",(resp) => this.tryConnection(resp)
-
-    )
+    this.transport.on("p2pConnection",(resp) => this.tryConnection(resp)    )
 
       this.transport.on("disconnected",(data)=>{
       //console.log("user disconnected: ", data)
        delete this.other_users[data.uuid]
     })
+
   this.startGameLoop();
   }
 
 
 
-  tryConnection(e){
-    if(DEBUG_WEBRTC){console.log("try connection")}
+  async tryConnection(e){
+    //if(DEBUG_WEBRTC){console.log("try connection")}
     if (! this.webrtcController.localStream) {
-      if(DEBUG_WEBRTC){console.log('not ready yet');}
-      this.webrtcController.start()
-      setTimeout(()=>{
-        this.tryConnection(e)
-      },200)
-      return;
+      //if(DEBUG_WEBRTC){console.log('not ready yet');}
+     await this.webrtcController.start()
+//      setTimeout(()=>{
+//        this.tryConnection(e)
+//      },200)
+//      return;
     }
-    if(DEBUG_WEBRTC){console.log("webrtc connection data")}
-    if(DEBUG_WEBRTC){console.log(e)}
+   // if(DEBUG_WEBRTC){console.log("webrtc connection data")}
+   // if(DEBUG_WEBRTC){console.log(e)}
     switch (e.data.type){
+      case "invite":
+        this.talkingto = e.senderUuid
+        this.accept_button.style.visibility = "visible"
+        this.hangup_button.style.visibility = "visible"
+        this.invite_button.style.visibility = "hidden"
+        //this.webrtcController.accept(this.hero.uuid)
+        break
+      case "accept":
+        this.accept_button.style.visibility = "hidden"
+        this.hangup_button.style.visibility = "visible"
+        this.invite_button.style.visibility = "hidden"
+         this.webrtcController.connect(e.senderUuid)
+        break
       case "offer":
         this.webrtcController.handleOffer(e.senderUuid,e.data  )
         break

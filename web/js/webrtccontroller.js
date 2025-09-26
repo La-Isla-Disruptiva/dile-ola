@@ -31,19 +31,27 @@ class WebrtcController{
   }
 
   async start(){
-    this.localStream = await navigator.mediaDevices.getUserMedia({audio: true, video: true});
+    console.log("starting webrtc")
+    console.log(navigator.permissions)
+    this.localStream = await navigator.mediaDevices.getUserMedia({audio: false, video: true});
     this.localVideo.srcObject = this.localStream;
     if(typeof this.startCB === 'function' ){
       this.startCB()
     }
   }
 
-  async connect(uuid){
+  async invite(uuid){
     await this.start()
+    this.signaling.postMessage({
+      uuid: uuid,
+      data: {type: 'invite'}
+    });
+  }
+
+  connect(uuid){
     this.signaling.postMessage({ 
       uuid: uuid,  
       data: {type: 'ready'}
-//      ,type: 'ready'
     });
 
   }
@@ -69,13 +77,23 @@ class WebrtcController{
     }
   };
 
+  async accept(uuid){
+    await this.start()
+    this.signaling.postMessage({
+      uuid: uuid,
+      data: {type: 'ready'}
+    });
+    
+  }
 
-createPeerConnection(uuid) {
-  this.pc = new RTCPeerConnection();
+async createPeerConnection(uuid) {
+  this.pc = new RTCPeerConnection({'iceServers': [{'urls': 'stun:stun.l.google.com:19302'}]});
   this.pc.onicecandidate = e => {
+    console.log("candidate out ")
+    console.log(e.candidate)
     const message = {
       type: 'candidate',
-      candidate: null,
+      candidate: null
     };
     if (e.candidate) {
       message.candidate = e.candidate.candidate;
@@ -132,13 +150,14 @@ createPeerConnection(uuid) {
     await this.pc.setRemoteDescription(answer);
   }
   async handleCandidate(candidate) {
-    //console.log("candidate in ")
+    console.log("candidate in ")
+    console.log(candidate)
     if (!this.pc) {
       console.error('no peerconnection');
       return;
     }
-    if (! candidate.candidate) {
-      await this.pc.addIceCandidate(null);
+    if (!candidate.candidate || candidate.candidate === null || candidate.candidate === undefined) {
+      await this.pc.addIceCandidate({});
     } else {
       await this.pc.addIceCandidate(candidate);
     }

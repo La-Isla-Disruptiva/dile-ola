@@ -1,32 +1,39 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Dile Ola!</title>
   <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1">
-  <link rel="stylesheet" href="styles.css"
+  <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
   <div class="touchCircle"></div>
   <div class="game-container">
+    <div class="control-container">
+      <button class="invite-button">invite</button>
+      <button class="accept-button">accept</button>
+      <button class="hangup-button">hang up</button>
+    </div>
     <canvas class="game-canvas" width="198" height="352"> </canvas>
     <div class="videos-container">
       <video id="localVideo" playsinline autoplay muted></video>
       <video id="remoteVideo" playsinline autoplay></video>
     </div>
   </div>
- <script src="js/utils.js"></script>
- <script src="js/storage.js"></script>
- <script src="js/parameters.js"></script>
- <script src="js/constants.js"></script>
- <script src="js/webrtccontroller.js"></script>
- <script src="js/sprite.js"></script>
- <script src="js/transport.js"></script>
- <script src="js/gameobject.js"></script>
- <script src="js/hero.js"></script>
- <script src="js/worldmap.js"></script>
- <script src="js/inputcontrol.js"></script>
- <script src="js/world.js"></script>
- <script src="js/init.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/parameters.js"></script>
+  <script src="js/constants.js"></script>
+  <script src="js/webrtccontroller.js"></script>
+  <script src="js/sprite.js"></script>
+  <script src="js/transport.js"></script>
+  <script src="js/gameobject.js"></script>
+  <script src="js/hero.js"></script>
+  <script src="js/worldmap.js"></script>
+  <script src="js/inputcontrol.js"></script>
+  <script src="js/world.js"></script>
+  <script src="js/init.js"></script>
 </body>
-</html>
 
+</html>

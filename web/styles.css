@@ -1,5 +1,4 @@
 :root {
-
   --pixel: 100px;
   --grid: 6;
   --line: 2px;
@@ -21,8 +20,8 @@
 }
 
 * {
-  * box-sizing: border-box;
-  * }
+  box-sizing: border-box;
+}
 
 html {
   margin: 0;
@@ -82,18 +81,39 @@ body {
   align-items: center;
   justify-content: space-evenly;
 
-/**  border: 2px solid red;
+  /**  border: 2px solid red;
   box-sizing: border-box;
 */
-
 }
 
 video {
   width: 90px;
-/*  border: 2px solid grey;
+  /*  border: 2px solid grey;
 */
-border-radius: 20px;
+  border-radius: 20px;
   box-sizing: border-box;
   aspect-ratio: 1/1;
   z-index: 1000;
+}
+
+.control-container {
+  width: 198px;
+  height: 25px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.accept-button {
+  visibility: hidden;
+}
+
+.hangup-button {
+  visibility: hidden;
 }
