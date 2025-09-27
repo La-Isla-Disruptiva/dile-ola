@@ -3,7 +3,6 @@ class World{
     this.element = config.element;
     this.canvas = this.element.querySelector(".game-canvas");
     this.ctx = this.canvas.getContext("2d");
-    this.gridFactor = 16;
     this.gridXOffset = 8;
     this.gridYOffset = 18;
 
@@ -28,7 +27,7 @@ class World{
     this.FRAME_INTERVAL_MS = 1000 / MAX_FPS;
     this.previousTimeMs = 0;
 
-    this.map = new WorldMap(window.worldMaps.DemoRoom) 
+    this.map = new WorldMap(window.worldMaps.DiningRoom) 
 
    // console.log(this)
   }
@@ -72,23 +71,7 @@ class World{
         console.log("other heros: ", this.other_users)
       }
     })
-      //console.log("keydown!", e)
 
-//      if(e.code === "Enter"){
-//        //console.log("start connection process")
-//        let [other_user]  = Object.keys(this.other_users)
-//        this.talkingto = other_user
-        // todo: do only if user is found
-//        this.webrtcController.invite(other_user)
-//        }
-
-//     if(e.code === "Escape"){
-      //console.log("start disconnection process")
-        // todo: do only if user is found
-//        this.webrtcController.disconnect(this.talkingto)
-//        this.talkingto = null
-//      }
-//    })
     //  Ajuste la position des autres personnages
     this.transport.on("move",(data) => {
 
@@ -158,36 +141,8 @@ class World{
     this.transport.on("p2pConnection",(resp) => this.tryConnection(resp)    )
 
       this.transport.on("disconnected",(data)=>{
-      //console.log("user disconnected: ", data)
        delete this.other_users[data.uuid]
     })
-
-  // Preference dialog
-  /** 
-  var preference_dialog = document.querySelector(".preference-dialog")
-  var preference_button = document.querySelector(".preferences")
-
-  var name_input = document.querySelector(".preference-name")
-  var maternal_input = document.querySelector(".preference-maternal")
-  var learning_input = document.querySelector(".preference-learning")
-
-  preference_button.onclick = (e) => {
-    preference_dialog.show()
-    name_input.value = this.storage.name
-    maternal_input.value = this.storage.maternalLanguage
-    learning_input.value = this.storage.learningLanguage
-  }
-
-  name_input.onchange = (e) => {
-    this.storage.name = e.target.value
-  }
-  maternal_input.onchange = (e) => {
-    this.storage.maternalLanguage = e.target.value
-  }
-  learning_input.onchange = (e) => {
-    this.storage.learningLanguage = e.target.value
-  }  
-*/
 
   this.startGameLoop();
   }

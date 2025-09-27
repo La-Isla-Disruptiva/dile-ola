@@ -17,8 +17,8 @@ class Hero{
     this.velocityFactor = config.velocityFactor || 10
 
     // set up state
-    this.x = config.x || 4
-    this.y = config.y || 5
+    this.x = config.x || mapUtils.withGrid(4)
+    this.y = config.y || mapUtils.withGrid(5)
     this.direction = config.direction || "down"
 
     // Set up character
@@ -33,8 +33,8 @@ class Hero{
       src: "images/characters/people/" + this.ckey + ".png"
     })
     this.shadow = new GameObject({
-      x: config.x || 4,
-      y: config.y || 5,
+      x: config.x || mapUtils.withGrid(4),
+      y: config.y || mapUtils.withGrid(5),
       src: "images/characters/shadow.png"
     })
   // set up motion parameters
@@ -61,6 +61,7 @@ class Hero{
       this.movinProgressRemaining = this.velocityFactor;
     }
     this.updatePosition()
+    this.updateSprite(state);
 
     // update position
     if (state.x){
@@ -84,6 +85,16 @@ class Hero{
       const [ property ,change ] = this.directionUpdate[this.direction]
       this[property](change);
       this.movinProgressRemaining -= 1;
+    }
+  }
+
+  updateSprite(state){
+    if( this.isPlayer && this.movinProgressRemaining === 0  && !state.arrow){
+      this.hero.sprite.setAnimation("idle-" + this.direction);
+      return;
+    }
+    if (this.movinProgressRemaining > 0){
+      this.hero.sprite.setAnimation("walk-" + this.direction);
     }
   }
 

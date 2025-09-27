@@ -29,5 +29,16 @@ window.worldMaps = {
               x: 6, y: 6
             }),
     }
-  }
+  },
+  DiningRoom: {
+    lowerSrc: "images/maps/DiningRoomLower.png",
+    upperSrc: "images/maps/DiningRoomUpper.png",
+    gameObjects: {
+     npc: new Hero({  
+              ckey: "carlos",
+              ctx: this.ctx,
+              x: 7, y: 5
+            }),
+    }
+  },
 }
