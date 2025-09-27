@@ -15,9 +15,9 @@ class World{
      
     this.hero = new Hero({
               uuid: this.storage.uuid,
-              ckey: "laura",
+              ckey: this.storage.character || "laura",
               ctx: this.ctx,
-              x: 5, y: 4,
+              x: mapUtils.withGrid(5), y: mapUtils.withGrid(4),
               isPlayer: true
             }),
 
@@ -209,19 +209,26 @@ class World{
 
 
   draw(){
+
+    const camera = {
+      x: this.hero.x,
+      y: this.hero.y
+    }
+
     // todo: séparer le update du draw (??)
     this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height)
-    this.map.drawLower(this.ctx)
+    this.map.drawLower(this.ctx,camera)
+
     
     //  draw npcs
     Object.values(this.map.gameObjects).forEach(object => {
-      object.draw(this.ctx);
+      object.draw(this.ctx, camera);
     })
 
      // draw other USERS
      
     Object.values(this.other_users).forEach(object => {
-      object.draw(this.ctx);
+      object.draw(this.ctx, camera);
     })
 
     // update + draw USER
@@ -229,10 +236,14 @@ class World{
         arrow: this.inputControl.direction
       });
 
-      this.hero.draw(this.ctx)
-    
+      this.hero.draw(this.ctx, camera);
+
+      this.map.drawUpper(this.ctx, camera);
+
       // Communique le nouvel état
       this.transport.update(this.hero.uuid, "move", this.hero.state)
+
+
 
       // touch screen feedback
       const x= this.inputControl.touchStartX

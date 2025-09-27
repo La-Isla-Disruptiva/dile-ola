@@ -1,5 +1,6 @@
 class WorldMap{
   constructor(config){
+    console.log("new map", config)
     this.gameObjects = config.gameObjects
 
 
@@ -10,11 +11,11 @@ class WorldMap{
     this.upperImage.src = config.upperSrc;
   }
 
-  drawLower(ctx){
-    ctx.drawImage(this.lowerImage,0,0)
+  drawLower(ctx,camera){
+    ctx.drawImage(this.lowerImage,centerXOffset * gridFactor - camera.x,centerYOffset * gridFactor - camera.y)
   }
-  drawUpper(ctx){
-    ctx.drawImage(this.upperImage,0,0)
+  drawUpper(ctx,camera){
+    ctx.drawImage(this.upperImage,centerXOffset * gridFactor - camera.x,centerYOffset * gridFactor - camera.y)
   }
 }
 
@@ -26,7 +27,7 @@ window.worldMaps = {
      npc: new Hero({
               ckey: "alicia",
               ctx: this.ctx,
-              x: 6, y: 6
+              x: mapUtils.withGrid(6), y: mapUtils.withGrid(6)
             }),
     }
   },
@@ -37,7 +38,7 @@ window.worldMaps = {
      npc: new Hero({  
               ckey: "carlos",
               ctx: this.ctx,
-              x: 7, y: 5
+              x: mapUtils.withGrid(7), y: mapUtils.withGrid(5)
             }),
     }
   },

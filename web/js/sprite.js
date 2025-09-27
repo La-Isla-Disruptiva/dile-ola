@@ -62,10 +62,11 @@ class Sprite {
     }
   }
 
-  draw(ctx){
-    const x = this.gameObject.x * gridFactor - this.gridXOffset;
-    const y = this.gameObject.y * gridFactor - this.gridYOffset;
-    
+  draw(ctx, camera){
+   // console.log(camera)
+    const x = this.gameObject.x - this.gridXOffset + centerXOffset * gridFactor - camera.x;
+    const y = this.gameObject.y - this.gridYOffset + centerYOffset * gridFactor - camera.y;
+
     const [frameX, frameY] = this.frame
 
 

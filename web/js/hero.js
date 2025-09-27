@@ -14,11 +14,9 @@ class Hero{
     this.isPlayer = config.isPlayer || false;
     this.uuid = config.uuid || uuid()
 
-    this.velocityFactor = config.velocityFactor || 10
-
     // set up state
-    this.x = config.x || mapUtils.withGrid(4)
-    this.y = config.y || mapUtils.withGrid(5)
+    this._x = config.x || mapUtils.withGrid(4)
+    this._y = config.y || mapUtils.withGrid(5)
     this.direction = config.direction || "down"
 
     // Set up character
@@ -28,29 +26,47 @@ class Hero{
       return
     }
     this.hero = new GameObject({
-      x: this.x,
+      x: this._x,
       y: this.y,
       src: "images/characters/people/" + this.ckey + ".png"
     })
     this.shadow = new GameObject({
-      x: config.x,
-      y: config.y,
+      x: this._x,
+      y: this._y,
       src: "images/characters/shadow.png"
     })
   // set up motion parameters
     this.movinProgressRemaining = 0;
     this.directionUpdate = {
-      up: ["movey", -1 ], 
-      down: ["movey", 1 ], 
-      left: ["movex", -1 ], 
-      right: ["movex", 1 ], 
+      up: ["y", -1 ], 
+      down: ["y", 1 ], 
+      left: ["x", -1 ], 
+      right: ["x", 1 ], 
     }
   }
 
+  set x(value){
+    this._x = value
+    this.hero.x = value
+    this.shadow.x = value
+  }
+
+  get x(){
+    return this._x
+  }
+  
+  set y(value){
+    this._y = value
+    this.hero.y = value
+    this.shadow.y = value
+  }
+  get y(){
+    return this._y
+  }
   get state(){
     return { 
       ckey: this.ckey,
-      x: this.x,
+      x: this._x,
       y: this.y,
       direction: this.direction
     }
@@ -58,7 +74,7 @@ class Hero{
   update(state){
     if( this.isPlayer && this.movinProgressRemaining === 0  && state.arrow){
       this.direction = state.arrow
-      this.movinProgressRemaining = this.velocityFactor;
+      this.movinProgressRemaining = gridFactor;
     }
     this.updatePosition()
     this.updateSprite(state);
@@ -66,24 +82,19 @@ class Hero{
     // update position
     if (state.x){
       this.x = state.x
-      this.hero.x = state.x
-      this.shadow.x = state.x
     }
     if (state.y){
       this.y = state.y
-      this.hero.y = state.y
-      this.shadow.y = state.y
     }
     if (state.direction){
       this.direction = state.direction
-      this.shadow.x = state.x
     }
   }
 
   updatePosition(){
     if(this.movinProgressRemaining > 0 ){
       const [ property ,change ] = this.directionUpdate[this.direction]
-      this[property](change);
+      this[property] += change;
       this.movinProgressRemaining -= 1;
     }
   }
@@ -100,23 +111,14 @@ class Hero{
   changeCharacter(ckey){
     this.ckey = ckey
     this.hero = new GameObject({
-      x: this.x,
+      x: this._x,
       y: this.y,
       src: "images/characters/people/" + this.ckey + ".png"
     })
- }
-  movex(x){
-    this.x += x * 1/this.velocityFactor
-    this.shadow.x = this.x
-    this.hero.x = this.x
   }
-  movey(y){
-    this.y += y * 1/this.velocityFactor
-    this.shadow.y = this.y
-    this.hero.y = this.y
-  }
-  draw(ctx){
-    this.shadow.sprite.draw(ctx);
-    this.hero.sprite.draw(ctx);
+  
+  draw(ctx, camera){
+    this.shadow.sprite.draw(ctx,camera);
+    this.hero.sprite.draw(ctx,camera);
   }
 }
