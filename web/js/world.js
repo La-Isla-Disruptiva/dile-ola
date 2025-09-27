@@ -29,6 +29,7 @@ class World{
 
     this.map = new WorldMap(window.worldMaps.DiningRoom) 
 
+    
    // console.log(this)
   }
 
@@ -51,7 +52,9 @@ class World{
     this.inputControl = new InputControl();
     this.inputControl.init();
 
-    this.storage.on("character",(data) => {
+    this.mountObjects()
+
+    this.storage.oni("character",(data) => {
       this.hero.changeCharacter(data)
     })
 
@@ -83,7 +86,10 @@ class World{
 
       if ( data.uuid != this.hero.uuid){
         if (data.uuid in this.other_users ){
+          this.other_users[data.uuid].unmount(this.map)
           this.other_users[data.uuid].update(data.data)
+          this.other_users[data.uuid].mount(this.map)
+        
         }else{
           this.other_users[data.uuid] = new Hero({
             uuid: data.uuid, 
@@ -92,6 +98,7 @@ class World{
             x: data.data.x,
             y: data.data.y
           })
+          this.other_users[data.uuid].mount(this.map)
         }
       }
     })
@@ -142,14 +149,32 @@ class World{
     this.tryConnection.bind(this)
     this.transport.on("p2pConnection",(resp) => this.tryConnection(resp)    )
 
-      this.transport.on("disconnected",(data)=>{
-       delete this.other_users[data.uuid]
+    this.transport.on("disconnected",(data)=>{
+      this.other_users[data.uuid].unmount(this.map)
+      delete this.other_users[data.uuid]
     })
 
   this.startGameLoop();
   }
 
+  mountObjects(){  
+  // map objects
+    Object.values(this.map.gameObjects).forEach(object => {
+      if (!object.ismounted){
+        object.mount(this.map)
+      }
+    })
+    
+    // OTHER USERS
+    Object.values(this.other_users).forEach(object => {
+      if (!object.ismounted){
+        object.mount(this.map)
+      }
+    })
 
+    // user
+    this.hero.mount(this.map)
+  }
 
   async tryConnection(e){
     //if(DEBUG_WEBRTC){console.log("try connection")}
@@ -233,7 +258,8 @@ class World{
 
     // update + draw USER
       this.hero.update({
-        arrow: this.inputControl.direction
+        arrow: this.inputControl.direction,
+        map: this.map,
       });
 
       this.hero.draw(this.ctx, camera);
@@ -241,6 +267,7 @@ class World{
       this.map.drawUpper(this.ctx, camera);
 
       // Communique le nouvel état
+      //console.log("update transport", this.hero.uuid, "move", this.hero.state)
       this.transport.update(this.hero.uuid, "move", this.hero.state)
 
 

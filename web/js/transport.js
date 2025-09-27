@@ -25,7 +25,7 @@ class Transporter {
     // OPEN
     this.socket.onopen = (e) => {
       this.isConnected = true
-     // console.log("connection", this.socket)
+      console.log("connection", this.socket)
     }
     // ERROR
     this.socket.onerror = (e) => {
@@ -46,6 +46,7 @@ class Transporter {
     // RECEIVED
     this.socket.onmessage = (e) => {
       const data = JSON.parse(e.data)
+      //console.log("data received", data) 
       //if(DEBUG_WEBSOCKET && data.type === "p2pConnection"){ console.log("data received", data)}
       if(this.emitters[data.type] != undefined){
         this.emitters[data.type].forEach((fn) =>{
@@ -73,7 +74,8 @@ class Transporter {
   update(uuid, action, state){
 
     if ( ! this.isConnected ) { return }
-      const msg = {
+    //console.log("send data", uuid, action, state)
+    const msg = {
         token: this.password,
         uuid: uuid,
         type: action,

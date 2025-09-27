@@ -16,11 +16,10 @@
   }
 
   // SETUP STORAGE
-  let storage
+  let storage = new Storage()
   if (ENVIRONMENT === "local"){
-    storage = { uuid: uuid()}
+    storage.uuid = uuid()
   }else{
-    storage = new Storage()
     if ( !storage.uuid ){ // initialization at first connection
       storage.uuid = uuid()
     }

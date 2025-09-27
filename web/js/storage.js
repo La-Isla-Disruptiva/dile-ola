@@ -43,7 +43,7 @@ class Storage{
     return localStorage.getItem("character") || "laura"
   }
 
-    on(type , callback){
+  oni(type , callback){
 
     if( ! (type in this.emitters) ){
       this.emitters[type] = []

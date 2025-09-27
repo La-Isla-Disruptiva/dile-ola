@@ -72,13 +72,6 @@ class Hero{
     }
   }
   update(state){
-    if( this.isPlayer && this.movinProgressRemaining === 0  && state.arrow){
-      this.direction = state.arrow
-      this.movinProgressRemaining = gridFactor;
-    }
-    this.updatePosition()
-    this.updateSprite(state);
-
     // update position
     if (state.x){
       this.x = state.x
@@ -89,6 +82,42 @@ class Hero{
     if (state.direction){
       this.direction = state.direction
     }
+
+   if(this.movinProgressRemaining > 0){
+       this.updatePosition();
+    }else{
+      // more cases here ...
+
+      // keyboard ready and have an arrow pressed
+      if( this.isPlayer && state.arrow){
+         this.startBehavior(state, { type: "walk", direction: state.arrow } );
+      }
+
+      this.updateSprite();
+    }
+  }
+  
+  mount(map){
+    this.hero.mount(map);
+  }
+  unmount(map){
+    this.hero.unmount(map);
+  }
+  startBehavior(state, behavior){
+      this.direction = behavior.direction;
+      if( behavior.type === "walk"){
+        // stop if space is already taken
+        if( state.map.isSpaceTaken(this.x, this.y, this.direction)){
+          //console.log("space taken, cannot move")
+          return;
+        } 
+      //console.log("is space taken?", state.map.isSpaceTaken(this.x, this.y, this.direction))
+      //console.log("current position", this.x, this.y)
+      //console.log("next position", mapUtils.nextPosition(this.x, this.y, this.direction))
+      //console.log("walls", state.map.walls)
+      state.map.moveWall(this.x, this.y, this.direction)
+      this.movinProgressRemaining = gridFactor;
+      }
   }
 
   updatePosition(){
@@ -99,15 +128,14 @@ class Hero{
     }
   }
 
-  updateSprite(state){
-    if( this.isPlayer && this.movinProgressRemaining === 0  && !state.arrow){
-      this.hero.sprite.setAnimation("idle-" + this.direction);
-      return;
-    }
+  updateSprite(){
     if (this.movinProgressRemaining > 0){
       this.hero.sprite.setAnimation("walk-" + this.direction);
+      return
     }
+    this.hero.sprite.setAnimation("idle-" + this.direction);
   }
+
   changeCharacter(ckey){
     this.ckey = ckey
     this.hero = new GameObject({
