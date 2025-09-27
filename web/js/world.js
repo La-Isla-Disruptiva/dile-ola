@@ -86,6 +86,9 @@ class World{
 
       if ( data.uuid != this.hero.uuid){
         if (data.uuid in this.other_users ){
+          if (this.other_users[data.uuid].ckey != data.data.ckey){
+            this.other_users[data.uuid].changeCharacter(data.data.ckey)
+          }
           this.other_users[data.uuid].unmount(this.map)
           this.other_users[data.uuid].update(data.data)
           this.other_users[data.uuid].mount(this.map)
