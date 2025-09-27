@@ -4,12 +4,16 @@
 <head>
   <title>Dile Ola!</title>
   <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1">
+  <meta charset="utf-8">
   <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
+  <div class="canvas-container">
+  </div>
   <div class="touchCircle"></div>
   <div class="game-container">
+    <img class="preferences" src="images/icons/preferences.png" alt="preference button">
     <div class="control-container">
       <button class="invite-button">invite</button>
       <button class="accept-button">accept</button>
@@ -21,19 +25,45 @@
       <video id="remoteVideo" playsinline autoplay></video>
     </div>
   </div>
-  <script src="js/utils.js"></script>
-  <script src="js/storage.js"></script>
-  <script src="js/parameters.js"></script>
-  <script src="js/constants.js"></script>
-  <script src="js/webrtccontroller.js"></script>
-  <script src="js/sprite.js"></script>
-  <script src="js/transport.js"></script>
-  <script src="js/gameobject.js"></script>
-  <script src="js/hero.js"></script>
-  <script src="js/worldmap.js"></script>
-  <script src="js/inputcontrol.js"></script>
-  <script src="js/world.js"></script>
-  <script src="js/init.js"></script>
+  <dialog class="preference-dialog">
+    <h1>Preferencias</h1>
+    <form method="dialog" class="preferences-form">
+      <label>Nombre
+        <input class="preference-name" value="">
+      </label>
+      <label>Idioma maternal
+        <select name="idioma-maternal" id="idioma-maternal-select" class="preference-maternal">
+          <option value="espanol">Español</option>
+          <option value="francais">Français</option>
+          <option value="english">English</option>
+        </select>
+      </label>
+      <label>Idioma de aprendizaje
+        <select name="idioma-aprendizaje" id="idioma-aprendizaje-select" class="preference-learning">
+          <option value="francais">Français</option>
+          <option value="english">English</option>
+          <option value="espanol">Español</option>
+        </select>
+      </label>
+
+      <menu>
+        <button class="close-preference-dialog">Cerrar</button>
+      </menu>
+    </form>
+
+    <script src="js/utils.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/parameters.js"></script>
+    <script src="js/constants.js"></script>
+    <script src="js/webrtccontroller.js"></script>
+    <script src="js/sprite.js"></script>
+    <script src="js/transport.js"></script>
+    <script src="js/gameobject.js"></script>
+    <script src="js/hero.js"></script>
+    <script src="js/worldmap.js"></script>
+    <script src="js/inputcontrol.js"></script>
+    <script src="js/world.js"></script>
+    <script src="js/init.js"></script>
 </body>
 
 </html>

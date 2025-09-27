@@ -1,12 +1,4 @@
 services:
-  ws:
-    build:
-      dockerfile: Dockerfile
-      context: .
-    ports:
-      - 8888:8888
-    volumes:
-      - ./server:/app
   web:
     image: nginx:latest
     ports:

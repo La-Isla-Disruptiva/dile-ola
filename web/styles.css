@@ -117,3 +117,35 @@ video {
 .hangup-button {
   visibility: hidden;
 }
+.canvas-container {
+  position: absolute;
+  height: 352px;
+  width: 198px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+
+  transform: scale(var(--scale-factor));
+  z-index: 0;
+}
+
+.preferences {
+  position: absolute;
+  object-fit: cover;
+  cursor: pointer;
+  background-size: cover;
+  width: 15px;
+  height: 15px;
+  top: 5px;
+  right: 5px;
+  padding: 0;
+  background-color: white;
+  border-radius: 5px;
+  z-index: 100;
+}
+
+.preferences-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}

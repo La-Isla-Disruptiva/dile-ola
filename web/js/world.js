@@ -162,6 +162,32 @@ class World{
        delete this.other_users[data.uuid]
     })
 
+  // Preference dialog
+  var preference_dialog = document.querySelector(".preference-dialog")
+  var preference_button = document.querySelector(".preferences")
+
+  var name_input = document.querySelector(".preference-name")
+  var maternal_input = document.querySelector(".preference-maternal")
+  var learning_input = document.querySelector(".preference-learning")
+
+  preference_button.onclick = (e) => {
+    preference_dialog.show()
+    name_input.value = this.storage.name
+    maternal_input.value = this.storage.maternalLanguage
+    learning_input.value = this.storage.learningLanguage
+  }
+
+  name_input.onchange = (e) => {
+    this.storage.name = e.target.value
+  }
+  maternal_input.onchange = (e) => {
+    this.storage.maternalLanguage = e.target.value
+  }
+  learning_input.onchange = (e) => {
+    this.storage.learningLanguage = e.target.value
+  }  
+
+
   this.startGameLoop();
   }
 
