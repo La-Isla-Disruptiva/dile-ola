@@ -31,8 +31,8 @@ class WebrtcController{
   }
 
   async start(){
-    console.log("starting webrtc")
-    console.log(navigator.permissions)
+    //console.log("starting webrtc")
+    //console.log(navigator.permissions)
     this.localStream = await navigator.mediaDevices.getUserMedia({audio: false, video: true});
     this.localVideo.srcObject = this.localStream;
     if(typeof this.startCB === 'function' ){
@@ -89,8 +89,8 @@ class WebrtcController{
 async createPeerConnection(uuid) {
   this.pc = new RTCPeerConnection({'iceServers': [{'urls': 'stun:stun.l.google.com:19302'}]});
   this.pc.onicecandidate = e => {
-    console.log("candidate out ")
-    console.log(e.candidate)
+    //console.log("candidate out ")
+    //console.log(e.candidate)
     const message = {
       type: 'candidate',
       candidate: null
@@ -150,8 +150,8 @@ async createPeerConnection(uuid) {
     await this.pc.setRemoteDescription(answer);
   }
   async handleCandidate(candidate) {
-    console.log("candidate in ")
-    console.log(candidate)
+    //console.log("candidate in ")
+    //console.log(candidate)
     if (!this.pc) {
       console.error('no peerconnection');
       return;

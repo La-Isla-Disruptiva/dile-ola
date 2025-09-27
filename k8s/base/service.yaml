@@ -1,16 +1,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: dile-ola-ws-service
+  name: dile-ola-service
   namespace: default 
   annotations:
-    traefik.ingress.kubernetes.io/service.sticky.cookie: "true"
     kubernetes.io/ingress.class: traefik
 spec:
   selector:
-    run: dile-ola-ws
+    run: dile-ola
   ports:
-    - name: dile-ola-ws-tcp
+    - name: dile-ola-tcp
       protocol: TCP
       port: 80
-      targetPort: 8888
+      targetPort: 80

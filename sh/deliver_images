@@ -2,4 +2,3 @@ set -eu
 source .env
 
 docker push $REGISTRY/$APP_NAME:${VERSION}
- docker push $REGISTRY/$APP_WS_NAME:${VERSION}

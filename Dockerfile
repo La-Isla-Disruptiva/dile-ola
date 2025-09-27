@@ -1,15 +1,6 @@
-FROM golang:1.25
+FROM nginx:latest
 
-WORKDIR /usr/src/app
+# COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY ./web /usr/share/nginx/html
 
-# pre-copy/cache go.mod for pre-downloading dependencies and only redownloading them in subsequent builds if they change
-COPY go.mod go.sum ./
-RUN go mod download
-
-#COPY . /app/.
-
-#RUN go build -v -o /usr/local/bin/app ./server/main.go
-
-EXPOSE 8888
-
-CMD ["go", "run", "/app/main.go"]
+RUN cd /usr/share/nginx/html/js/ && sed -i '/ENVIRONMENT/d' ./parameters.js && echo  "const ENVIRONMENT=\"dev\"" >> parameters.js

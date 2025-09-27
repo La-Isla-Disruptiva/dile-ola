@@ -1,26 +1,25 @@
 kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: dile-ola-ws-ingress
+  name: dile-ola-ingress
   annotations:
     kubernetes.io/spec.ingressClassName: traefik
     cert-manager.io/cluster-issuer: letsencrypt-dev
     traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd
-    traefik.ingress.kubernetes.io/router.middlewares: default-ssl-header@kubernetescrd
 
 spec:
   rules:
-    - host: ws.dile-ola.disruptiva.org
+    - host: dile-ola.disruptiva.dev
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: dile-ola-ws-service
+                name: dile-ola-service
                 port:
                   number: 80
   tls:
-    - secretName: dile-ola-ws-tls
+    - secretName: dile-ola-tls
       hosts:
-        - ws.dile-ola.disruptiva.org
+        - dile-ola.disruptiva.dev
