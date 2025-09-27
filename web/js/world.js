@@ -163,6 +163,7 @@ class World{
     })
 
   // Preference dialog
+  /** 
   var preference_dialog = document.querySelector(".preference-dialog")
   var preference_button = document.querySelector(".preferences")
 
@@ -186,7 +187,7 @@ class World{
   learning_input.onchange = (e) => {
     this.storage.learningLanguage = e.target.value
   }  
-
+*/
 
   this.startGameLoop();
   }

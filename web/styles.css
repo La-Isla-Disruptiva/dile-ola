@@ -129,7 +129,7 @@ video {
   z-index: 0;
 }
 
-.preferences {
+.open-preference-dialog {
   position: absolute;
   object-fit: cover;
   cursor: pointer;

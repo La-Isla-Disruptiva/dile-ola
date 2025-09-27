@@ -14,7 +14,7 @@ class Transporter {
   }
 
   init(){
-    if(DEBUG_WEBSOCKET){console.log("initialise connection")}
+//    if(DEBUG_WEBSOCKET){console.log("initialise connection")}
     let uri
     if (this.port != undefined){
       uri= this.protocol + "://" + this.hostname + ":" + this.port
@@ -46,7 +46,7 @@ class Transporter {
     // RECEIVED
     this.socket.onmessage = (e) => {
       const data = JSON.parse(e.data)
-      if(DEBUG_WEBSOCKET && data.type === "p2pConnection"){ console.log("data received", data)}
+      //if(DEBUG_WEBSOCKET && data.type === "p2pConnection"){ console.log("data received", data)}
       if(this.emitters[data.type] != undefined){
         this.emitters[data.type].forEach((fn) =>{
           fn(data)
@@ -80,7 +80,7 @@ class Transporter {
         data:  state
       }
     if(action === "p2pConnection"){
-     console.log("data send: ",msg)
+//     console.log("data send: ",msg)
     }
 
       this.socket.send(JSON.stringify(msg)); 

@@ -26,6 +26,8 @@
     }
   }
 
+  const preferences = new PreferencesController()
+  preferences.init(storage)
   // START !!
   const world = new World({
     element: document.querySelector(".game-container"),

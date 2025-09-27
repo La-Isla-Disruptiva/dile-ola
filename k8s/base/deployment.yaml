@@ -18,6 +18,6 @@ spec:
         - name: default-pull-secret
       containers:
         - name: dile-ola
-          image: disruptiva.dev:5000/dile-ola:0.0.3
+          image: disruptiva.dev:5000/dile-ola:0.0.4
           ports:
             - containerPort: 8888
