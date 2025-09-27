@@ -51,7 +51,9 @@ class World{
     this.inputControl = new InputControl();
     this.inputControl.init();
 
-
+    this.storage.on("character",(data) => {
+      this.hero.changeCharacter(data)
+    })
 
 
     this.transport = new Transporter({

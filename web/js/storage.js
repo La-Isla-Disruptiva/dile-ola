@@ -1,6 +1,7 @@
 class Storage{
   constructor(){
 
+        this.emitters = {}
   }
  
   set uuid(value){
@@ -29,5 +30,25 @@ class Storage{
   }
   get learningLanguage(){
     return localStorage.getItem("learningLanguage") || ""
+  }
+  set character(value){
+    localStorage.setItem("character", value)
+    if(this.emitters["character"] != undefined){
+        this.emitters["character"].forEach((fn) =>{
+          fn(value)
+        })
+      }
+  }
+  get character(){
+    return localStorage.getItem("character") || "laura"
+  }
+
+    on(type , callback){
+
+    if( ! (type in this.emitters) ){
+      this.emitters[type] = []
+    }
+    this.emitters[type].push(callback)
+
   }
 }

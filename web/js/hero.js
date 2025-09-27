@@ -33,8 +33,8 @@ class Hero{
       src: "images/characters/people/" + this.ckey + ".png"
     })
     this.shadow = new GameObject({
-      x: config.x || mapUtils.withGrid(4),
-      y: config.y || mapUtils.withGrid(5),
+      x: config.x,
+      y: config.y,
       src: "images/characters/shadow.png"
     })
   // set up motion parameters
@@ -97,7 +97,14 @@ class Hero{
       this.hero.sprite.setAnimation("walk-" + this.direction);
     }
   }
-
+  changeCharacter(ckey){
+    this.ckey = ckey
+    this.hero = new GameObject({
+      x: this.x,
+      y: this.y,
+      src: "images/characters/people/" + this.ckey + ".png"
+    })
+ }
   movex(x){
     this.x += x * 1/this.velocityFactor
     this.shadow.x = this.x
