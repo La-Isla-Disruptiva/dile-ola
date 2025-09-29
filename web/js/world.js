@@ -27,7 +27,7 @@ class World{
     this.FRAME_INTERVAL_MS = 1000 / MAX_FPS;
     this.previousTimeMs = 0;
 
-    this.map = new WorldMap(window.worldMaps.DiningRoom) 
+    this.map = new WorldMap(window.worldMaps.Common1) 
 
     
    // console.log(this)

@@ -1,5 +1,5 @@
 //  Drawing loop
-const MAX_FPS = 40;
+const MAX_FPS = 80;
 
 // Grid parameters
 

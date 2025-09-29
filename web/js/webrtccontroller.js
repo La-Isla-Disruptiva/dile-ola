@@ -33,7 +33,7 @@ class WebrtcController{
   async start(){
     //console.log("starting webrtc")
     //console.log(navigator.permissions)
-    this.localStream = await navigator.mediaDevices.getUserMedia({audio: false, video: true});
+    this.localStream = await navigator.mediaDevices.getUserMedia({audio: true, video: true});
     this.localVideo.srcObject = this.localStream;
     if(typeof this.startCB === 'function' ){
       this.startCB()

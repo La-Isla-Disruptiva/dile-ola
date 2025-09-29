@@ -1,5 +1,6 @@
 class GameObject {
   constructor(config){
+    
     this.ismounted = false;
     this.x = config.x || 1;
     this.y = config.y || 1;
